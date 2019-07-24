@@ -13,10 +13,13 @@ import 'package:langaw/home-view.dart';
 import 'package:langaw/lost-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:langaw/highscore.dart';
+import 'package:langaw/gems.dart';
 
 class LangawGame extends Game {
   HighscoreDisplay highscoreDisplay;
+  GemsDisplay gemsdisplay;
   final SharedPreferences storage;
+  final SharedPreferences gemsstorage;
   View activeView;
   LostView lostView;
   HomeView homeView;
@@ -34,7 +37,7 @@ class LangawGame extends Game {
   ScoreDisplay scoreDisplay;
 
 
-  LangawGame(this.storage) {
+  LangawGame(this.storage, this.gemsstorage) {
     initialize();
   }
 
@@ -51,6 +54,7 @@ class LangawGame extends Game {
     lostView = LostView(this);
     homeView = HomeView(this);
     highscoreDisplay = HighscoreDisplay(this);
+    gemsdisplay = GemsDisplay(this);
   }
 
   void spawnButton(){
@@ -74,7 +78,7 @@ class LangawGame extends Game {
   void render(Canvas canvas) {
     Rect bgRect = Rect.fromLTWH(0, 0, screenSize.width, screenSize.height);// L and T are coordinates
     Paint bgPaint = Paint();
-    bgPaint.color = Color(0xff576574);// Fuel Town from FlatUIColors.com be careful as some color can be harmful
+    bgPaint.color = Color(0xff1e1e1e);// Fuel Town from FlatUIColors.com be careful as some color can be harmful
     canvas.drawRect(bgRect, bgPaint);// Canvas needs a size and a color
     spawnRain();
     if (activeView == View.playing) rains.forEach((Rain rain) => rain.render(canvas));
@@ -84,6 +88,7 @@ class LangawGame extends Game {
     if (activeView == View.playing) scoreDisplay.render(canvas);
     if (activeView == View.home) homeView.render(canvas);
     if (activeView == View.lost) lostView.render(canvas);
+    if (activeView == View.home) gemsdisplay.render(canvas);
     if (activeView == View.lost) highscoreDisplay.render(canvas);
   }
 
@@ -93,13 +98,16 @@ class LangawGame extends Game {
     if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.update(t));
     if (activeView == View.playing) buttons.forEach((Button button) => button.update(t));
     if (activeView == View.playing) rains.forEach((Rain rain){
-      if (rain.rainColor == rain.colorGreen && rain.y > fly.y + tileSize - raintileSize && rain.x >= fly.x && rain.x + raintileSize < (fly.x + tileSize)){
+      if (rain.rainColor == rain.colorGreen && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x){
         amountRain += 1;
         score += 1;
         if (score > (storage.getInt('highscore') ?? 0)) {
           storage.setInt('highscore', score);
           highscoreDisplay.updateHighscore();
         }
+        int counter = (gemsstorage.getInt('gems') ?? 0) + 1;
+        gemsstorage.setInt('gems', counter);
+        gemsdisplay.updateGems();
       }
       if (rain.rainColor == rain.colorRed || rain.rainColor == rain.colorBlue || rain.rainColor == rain.colorYellow){
         if (rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x){
