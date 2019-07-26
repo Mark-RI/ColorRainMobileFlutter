@@ -16,7 +16,8 @@ void main() async {
 
   Flame.images.loadAll(<String>[
     'circle.png',
-    'gem_9.png'
+    'gem_9.png',
+    'play.png',
   ]);
 
   Util flameUtil = Util();
