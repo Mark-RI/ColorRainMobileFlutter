@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:langaw/fly.dart';
 import 'dart:math';
 import 'package:flutter/gestures.dart';
-import 'package:langaw/button.dart';
 import 'package:langaw/rain.dart';
 import 'package:flame/util.dart';
 import 'package:langaw/score-display.dart';
@@ -15,11 +14,17 @@ import 'package:langaw/lost-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:langaw/highscore.dart';
 import 'package:langaw/gems.dart';
+import 'package:langaw/shop.dart';
 import 'package:langaw/start-button.dart';
+import 'package:langaw/shopping.dart';
+import 'package:langaw/price.dart';
 
 class LangawGame extends Game {
   HighscoreDisplay highscoreDisplay;
   GemsDisplay gemsdisplay;
+  List<ShoppingView> shoppingView;
+  List<PriceDisplay> price;
+  Shop shop;
   final SharedPreferences storage;
   final SharedPreferences gemsstorage;
   View activeView;
@@ -33,11 +38,12 @@ class LangawGame extends Game {
   Fly fly;
   int homeamountRain = 15;
   int amountRain = 1;
-  List<Button> buttons;
   List<Rain> rains;
   List<Rain> homerains;
   int score;
   ScoreDisplay scoreDisplay;
+  bool buy;
+  int counter;
 
 
   LangawGame(this.storage, this.gemsstorage) {
@@ -45,29 +51,47 @@ class LangawGame extends Game {
   }
 
   void initialize() async {
+    shoppingView = List<ShoppingView>();
+    price = List<PriceDisplay>();
     homerains = List<Rain>();
     rains = List<Rain>();
-    buttons = List<Button>();
     resize(await Flame.util.initialDimensions());
     score = 0;
     scoreDisplay = ScoreDisplay(this);
     activeView = View.home;
-    spawnButton();
     spawnFly();
     lostView = LostView(this);
     homeView = HomeView(this);
     highscoreDisplay = HighscoreDisplay(this);
     gemsdisplay = GemsDisplay(this);
     startButton = StartButton(this);
+    shop = Shop(this);
+    loadShop();
   }
 
-  void spawnButton() {
-    buttons.add(Button(this, 0.2, false));
-    buttons.add(Button(this, 0.8, true));
+  void loadShop() {
+      shoppingView.add(ShoppingView(this, 0, 0.5, 200));
+      shoppingView.add(ShoppingView(this, 2.5, 0.5, 200));
+      shoppingView.add(ShoppingView(this, 5, 0.5, 200));
+      shoppingView.add(ShoppingView(this, 0, 4, 200));
+      shoppingView.add(ShoppingView(this, 2.5, 4, 200));
+      shoppingView.add(ShoppingView(this, 5, 4, 200));
+      shoppingView.add(ShoppingView(this, 0, 7.5, 200));
+      shoppingView.add(ShoppingView(this, 2.5, 7.5, 200));
+      shoppingView.add(ShoppingView(this, 5, 7.5, 200));
+      price.add(PriceDisplay(this, '200', 1.9, 3.9));
+      price.add(PriceDisplay(this, '200', 4.4, 3.9));
+      price.add(PriceDisplay(this, '200', 6.9, 3.9));
+      price.add(PriceDisplay(this, '200', 1.9, 8.34));
+      price.add(PriceDisplay(this, '200', 4.4, 8.34));
+      price.add(PriceDisplay(this, '200', 6.9, 8.34));
+      price.add(PriceDisplay(this, '200', 1.9, 12.75));
+      price.add(PriceDisplay(this, '200', 4.4, 12.75));
+      price.add(PriceDisplay(this, '200', 6.9, 12.75));
   }
 
   void spawnFly() {
-    fly = new Fly(this, (screenSize.width - tileSize) / 2,
+    fly = Fly(this, (screenSize.width - tileSize) / 2,
         screenSize.height - (btileSize * 2) - (tileSize * 2));
   }
 
@@ -93,17 +117,18 @@ class LangawGame extends Game {
         rain.render(canvas));
     if (activeView == View.home || activeView == View.lost) homerains.forEach((
         Rain rain) => rain.render(canvas));
-    if (activeView == View.playing) buttons.forEach((Button button) =>
-        button.render(canvas));
     if (activeView == View.playing) fly.render(canvas);
     if (activeView == View.playing) scoreDisplay.render(canvas);
     if (activeView == View.home) homeView.render(canvas);
     if (activeView == View.lost) lostView.render(canvas);
-    if (activeView == View.home) gemsdisplay.render(canvas);
+    if (activeView == View.home || activeView == View.shopping) gemsdisplay.render(canvas);
+    if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.render(canvas));
+    if (activeView == View.shopping) price.forEach((PriceDisplay price) => price.render(canvas));
     if (activeView == View.lost) highscoreDisplay.render(canvas);
     if (activeView == View.home || activeView == View.lost) {
       startButton.render(canvas);
     }
+    if (activeView == View.home) shop.render(canvas);
   }
 
   void update(double t) {
@@ -112,8 +137,6 @@ class LangawGame extends Game {
         rain.update(t));
     if (activeView == View.home || activeView == View.lost) homerains.forEach((
         Rain rain) => rain.update(t));
-    if (activeView == View.playing) buttons.forEach((Button button) =>
-        button.update(t));
     if (activeView == View.playing) rains.forEach((Rain rain) {
       if (rain.rainColor == rain.colorGreen &&
           rain.y > fly.y + tileSize - raintileSize &&
@@ -124,7 +147,7 @@ class LangawGame extends Game {
           storage.setInt('highscore', score);
           highscoreDisplay.updateHighscore();
         }
-        int counter = (gemsstorage.getInt('gems') ?? 0) + 1;
+        counter = (gemsstorage.getInt('gems') ?? 0) + 1;
         gemsstorage.setInt('gems', counter);
         gemsdisplay.updateGems();
       }
@@ -139,6 +162,8 @@ class LangawGame extends Game {
     if (activeView == View.playing) scoreDisplay.update(t);
     if (activeView == View.home) homeView.update(t);
     if (activeView == View.lost) lostView.update(t);
+    if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.update(t));
+    if (activeView == View.shopping) price.forEach((PriceDisplay price) => price.update());
   }
 
   void resize(Size size) {
@@ -149,6 +174,7 @@ class LangawGame extends Game {
   }
 
   void onTapDown(TapDownDetails d) {
+    buy = true;
     if (activeView == View.lost) {
       if (startButton.rect.contains(d.globalPosition)) {
         lostView.onTapDown();
@@ -156,39 +182,41 @@ class LangawGame extends Game {
     }
 
     if (activeView == View.home) {
+      if (shop.rect.contains(d.globalPosition)){
+        shop.onTapDown();
+        buy = false;
+      }
       if (startButton.rect.contains(d.globalPosition)) {
         homeView.onTapDown();
       }
     }
 
-    buttons.forEach((Button button) {
-      if (button.buttonRect.contains(d.globalPosition)) {
-        bool dir_right = button.onTapDown();
-        buttons.forEach((Button button) => button.changeColor = true);
-        if (dir_right == true) {
-          fly.isLeft = false;
-          fly.isRight = true;
-          buttons.forEach((Button button) => button.isLeft = false);
-          buttons.forEach((Button button) => button.isRight = true);
-        }
-        if (dir_right == false) {
-          fly.isRight = false;
-          fly.isLeft = true;
-          buttons.forEach((Button button) => button.isLeft = true);
-          buttons.forEach((Button button) => button.isRight = false);
-        }
-      }
-    });
-  }
 
-  void onTapUp(TapUpDetails d) {
-    buttons.forEach((Button button) {
-      if (button.buttonRect.contains(d.globalPosition)) {
-        buttons.forEach((Button button) => button.onTapUp());
-        buttons.forEach((Button button) => button.changeColor = false);
-        fly.isRight = false;
+
+    if (activeView == View.playing) {
+      Offset pos = d.globalPosition;
+      double pos_x = pos.dx;
+      if (fly.x < pos_x) {
         fly.isLeft = false;
-      }
-    });
+        fly.isRight = true;
+      };
+      if (fly.x > pos_x) {
+        fly.isLeft = true;
+        fly.isRight = false;
+      };
+    }
+  }
+    void onTapUp(TapUpDetails d) {
+      fly.isRight = false;
+      fly.isLeft = false;
+
+      if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingView){
+        counter = (gemsstorage.getInt('gems') ?? 0);
+        if (shoppingView.rect.contains(d.globalPosition) && buy == true && shoppingView.price <= counter ){
+          counter = (gemsstorage.getInt('gems') ?? 0) - shoppingView.price;
+          gemsstorage.setInt('gems', counter);
+          gemsdisplay.updateGems();
+        }
+      });
   }
 }

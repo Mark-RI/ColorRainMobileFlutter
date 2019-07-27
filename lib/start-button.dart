@@ -20,8 +20,4 @@ class StartButton {
   void render(Canvas c) {
     sprite.renderRect(c, rect);
   }
-
-  void update(double t) {}
-
-  void onTapDown() {}
 }

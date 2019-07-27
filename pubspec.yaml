@@ -41,6 +41,9 @@ flutter:
      - assets/images/circle.png
      - assets/images/gem_9.png
      - assets/images/play.png
+     - assets/images/shop.png
+     - assets/images/templateshop.png
+     - assets/images/magnet-blast.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

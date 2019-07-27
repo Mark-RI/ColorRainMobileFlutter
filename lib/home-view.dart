@@ -39,7 +39,6 @@ class HomeView {
     );
   }
   void onTapDown() {
-//    game.score = 0;
     game.homerains = List<Rain>();
     game.activeView = View.playing;
   }

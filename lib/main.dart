@@ -18,6 +18,9 @@ void main() async {
     'circle.png',
     'gem_9.png',
     'play.png',
+    'shop.png',
+    'templateshop.png',
+    'magnet-blast.png'
   ]);
 
   Util flameUtil = Util();
