@@ -17,13 +17,31 @@ import 'package:langaw/gems.dart';
 import 'package:langaw/shop.dart';
 import 'package:langaw/start-button.dart';
 import 'package:langaw/shopping.dart';
-import 'package:langaw/price.dart';
+import 'package:langaw/shoptext.dart';
+import 'package:langaw/magnet.dart';
+import 'package:langaw/shield.dart';
+import 'package:langaw/heart.dart';
+import 'package:langaw/swords.dart';
+import 'package:langaw/rupee.dart';
+import 'package:langaw/arrows.dart';
+import 'package:langaw/eagle.dart';
+import 'package:langaw/armor.dart';
+import 'package:langaw/beanstalk.dart';
 
 class LangawGame extends Game {
+  Beanstalk beanstalk;
+  Eagle eagle;
+  Armor armor;
+  Arrows arrows;
+  Rupee rupee;
+  Swords swords;
+  Magnet magnet;
+  Shield shield;
+  Heart heart;
   HighscoreDisplay highscoreDisplay;
   GemsDisplay gemsdisplay;
   List<ShoppingView> shoppingView;
-  List<PriceDisplay> price;
+  ShopDisplay shopDisplay;
   Shop shop;
   final SharedPreferences storage;
   final SharedPreferences gemsstorage;
@@ -44,6 +62,16 @@ class LangawGame extends Game {
   ScoreDisplay scoreDisplay;
   bool buy;
   int counter;
+  bool magnet_bought = false;
+  bool shield_bought = false;
+  bool heart_bought = false;
+  bool swords_bought = false;
+  bool rupee_bought = false;
+  bool arrows_bought = false;
+  bool armor_bought = false;
+  bool eagle_bought = false;
+  bool beanstalk_bought = false;
+
 
 
   LangawGame(this.storage, this.gemsstorage) {
@@ -52,7 +80,6 @@ class LangawGame extends Game {
 
   void initialize() async {
     shoppingView = List<ShoppingView>();
-    price = List<PriceDisplay>();
     homerains = List<Rain>();
     rains = List<Rain>();
     resize(await Flame.util.initialDimensions());
@@ -65,29 +92,21 @@ class LangawGame extends Game {
     highscoreDisplay = HighscoreDisplay(this);
     gemsdisplay = GemsDisplay(this);
     startButton = StartButton(this);
+    shopDisplay = ShopDisplay(this);
     shop = Shop(this);
     loadShop();
   }
 
   void loadShop() {
-      shoppingView.add(ShoppingView(this, 0, 0.5, 200));
-      shoppingView.add(ShoppingView(this, 2.5, 0.5, 200));
-      shoppingView.add(ShoppingView(this, 5, 0.5, 200));
-      shoppingView.add(ShoppingView(this, 0, 4, 200));
-      shoppingView.add(ShoppingView(this, 2.5, 4, 200));
-      shoppingView.add(ShoppingView(this, 5, 4, 200));
-      shoppingView.add(ShoppingView(this, 0, 7.5, 200));
-      shoppingView.add(ShoppingView(this, 2.5, 7.5, 200));
-      shoppingView.add(ShoppingView(this, 5, 7.5, 200));
-      price.add(PriceDisplay(this, '200', 1.9, 3.9));
-      price.add(PriceDisplay(this, '200', 4.4, 3.9));
-      price.add(PriceDisplay(this, '200', 6.9, 3.9));
-      price.add(PriceDisplay(this, '200', 1.9, 8.34));
-      price.add(PriceDisplay(this, '200', 4.4, 8.34));
-      price.add(PriceDisplay(this, '200', 6.9, 8.34));
-      price.add(PriceDisplay(this, '200', 1.9, 12.75));
-      price.add(PriceDisplay(this, '200', 4.4, 12.75));
-      price.add(PriceDisplay(this, '200', 6.9, 12.75));
+    shoppingView.add(ShoppingView(this, 0, 0.5, 200, 1.9, 3.9, '200', 'shield'));
+    shoppingView.add(ShoppingView(this, 2.5, 0.5, 200, 4.4, 3.9, '200', 'heart'));
+    shoppingView.add(ShoppingView(this, 5, 0.5, 200, 6.9, 3.9, '200', 'rupee'));
+    shoppingView.add(ShoppingView(this, 0, 4, 200, 1.9, 8.34, '200', 'arrows'));
+    shoppingView.add(ShoppingView(this, 2.5, 4, 200, 4.4, 8.34, '200', 'swords'));
+    shoppingView.add(ShoppingView(this, 5, 4, 200, 6.9, 8.34, '200', 'armor'));
+    shoppingView.add(ShoppingView(this, 0, 7.5, 200, 1.9, 12.75, '200', 'beanstalk'));
+    shoppingView.add(ShoppingView(this, 2.5, 7.5, 200, 4.4, 12.75, '200', 'magnet'));
+    shoppingView.add(ShoppingView(this, 5, 7.5, 200, 6.9, 12.75, '200', 'eagle'));
   }
 
   void spawnFly() {
@@ -123,13 +142,22 @@ class LangawGame extends Game {
     if (activeView == View.lost) lostView.render(canvas);
     if (activeView == View.home || activeView == View.shopping) gemsdisplay.render(canvas);
     if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.render(canvas));
-    if (activeView == View.shopping) price.forEach((PriceDisplay price) => price.render(canvas));
     if (activeView == View.lost) highscoreDisplay.render(canvas);
     if (activeView == View.home || activeView == View.lost) {
       startButton.render(canvas);
     }
     if (activeView == View.home) shop.render(canvas);
-  }
+    if (activeView == View.shopping) shopDisplay.render(canvas);
+    if (activeView == View.shopping && magnet_bought == true) magnet.render(canvas);
+    if (activeView == View.shopping && shield_bought == true) shield.render(canvas);
+    if (activeView == View.shopping && heart_bought == true) heart.render(canvas);
+    if (activeView == View.shopping && swords_bought == true) swords.render(canvas);
+    if (activeView == View.shopping && rupee_bought == true) rupee.render(canvas);
+    if (activeView == View.shopping && arrows_bought == true) arrows.render(canvas);
+    if (activeView == View.shopping && armor_bought == true) armor.render(canvas);
+    if (activeView == View.shopping && eagle_bought == true) eagle.render(canvas);
+    if (activeView == View.shopping && beanstalk_bought == true) beanstalk.render(canvas);
+    }
 
   void update(double t) {
     if (activeView == View.playing) fly.update(t);
@@ -162,8 +190,8 @@ class LangawGame extends Game {
     if (activeView == View.playing) scoreDisplay.update(t);
     if (activeView == View.home) homeView.update(t);
     if (activeView == View.lost) lostView.update(t);
-    if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.update(t));
-    if (activeView == View.shopping) price.forEach((PriceDisplay price) => price.update());
+    if (activeView == View.shopping) shopDisplay.update(t);
+    if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.update());
   }
 
   void resize(Size size) {
@@ -206,17 +234,56 @@ class LangawGame extends Game {
       };
     }
   }
-    void onTapUp(TapUpDetails d) {
-      fly.isRight = false;
-      fly.isLeft = false;
+  void onTapUp(TapUpDetails d) {
+    fly.isRight = false;
+    fly.isLeft = false;
 
-      if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingView){
-        counter = (gemsstorage.getInt('gems') ?? 0);
-        if (shoppingView.rect.contains(d.globalPosition) && buy == true && shoppingView.price <= counter ){
-          counter = (gemsstorage.getInt('gems') ?? 0) - shoppingView.price;
-          gemsstorage.setInt('gems', counter);
-          gemsdisplay.updateGems();
+    if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview){
+      counter = (gemsstorage.getInt('gems'));
+
+      if (shoppingview.rect.contains(d.globalPosition) && buy == true && shoppingview.price <= counter ){
+        counter = (gemsstorage.getInt('gems') ?? 0) - shoppingview.price;
+        gemsstorage.setInt('gems', counter);
+        gemsdisplay.updateGems();
+        shoppingview.bought = true;
+        if (shoppingview.power == 'magnet'){
+          magnet_bought = true;
+          magnet = Magnet(this, shoppingview.x, shoppingview.y);
         }
-      });
+        if (shoppingview.power == 'shield'){
+          shield_bought = true;
+          shield = Shield(this, shoppingview.x, shoppingview.y);
+        }
+        if (shoppingview.power == 'heart'){
+          heart_bought = true;
+          heart = Heart(this, shoppingview.x, shoppingview.y);
+        }
+        if (shoppingview.power == 'swords'){
+          swords_bought = true;
+          swords = Swords(this, shoppingview.x, shoppingview.y);
+        }
+        if (shoppingview.power == 'rupee'){
+          rupee_bought = true;
+          rupee = Rupee(this, shoppingview.x, shoppingview.y);
+        }
+        if (shoppingview.power == 'arrows'){
+          arrows_bought = true;
+          arrows = Arrows(this, shoppingview.x, shoppingview.y);
+        }
+        if (shoppingview.power == 'armor'){
+          armor_bought = true;
+          armor = Armor(this, shoppingview.x, shoppingview.y);
+        }
+        if (shoppingview.power == 'eagle'){
+          eagle_bought = true;
+          eagle = Eagle(this, shoppingview.x, shoppingview.y);
+        }
+        if (shoppingview.power == 'beanstalk'){
+          beanstalk_bought = true;
+          beanstalk = Beanstalk(this, shoppingview.x, shoppingview.y);
+        }
+        shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+      }
+    });
   }
 }

@@ -7,7 +7,6 @@ import 'package:langaw/rain.dart';
 
 class ShoppingView {
   final LangawGame game;
-  Rect titleRect;
   TextPainter painter;
   TextStyle textStyle;
   Offset position;
@@ -15,10 +14,27 @@ class ShoppingView {
   Sprite sprite;
   double x;
   double y;
+  double xp;
+  double yp;
   int price;
+  String priceString;
+  bool bought = false;
+  String power;
 
+  ShoppingView(this.game, this.x, this.y, this.price, this.xp, this.yp, this.priceString, [this.power]) {
+    painter = TextPainter(
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    );
 
-  ShoppingView(this.game, this.x, this.y, this.price) {
+    textStyle = TextStyle(
+        color: Color(0xffffffff),
+        fontSize: 18
+    );
+
+    position = Offset.zero;
+
+    update();
 
     rect = Rect.fromLTWH(
       game.tileSize + (game.tileSize * x),
@@ -26,34 +42,25 @@ class ShoppingView {
       game.tileSize * 2.2,
       game.tileSize * 2.2 * 1.263,
     );
-    sprite = Sprite('template shop.png');
-
-    painter = TextPainter(textAlign: TextAlign.start, textDirection: TextDirection.ltr);
-
-    textStyle = TextStyle(color: Color(0xffffffff), fontSize: 30);
-
-    position = Offset.zero;
-
+    sprite = Sprite('templateshop.png');
   }
 
   void render(Canvas c) {
-    painter.paint(c, position);
-
     sprite.renderRect(c, rect);
+    painter.paint(c, position);
   }
 
-
-  void update(double t) {
+  void update() {
     painter.text = TextSpan(
-      text: ("SHOP"),
+      text: '$priceString',
       style: textStyle,
     );
 
     painter.layout();
 
     position = Offset(
-      (game.screenSize.width / 2) - (painter.width / 2),
-      (game.tileSize * .25),
+      game.tileSize * xp,
+      game.tileSize * yp,
     );
   }
 }

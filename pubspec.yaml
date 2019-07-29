@@ -44,6 +44,14 @@ flutter:
      - assets/images/shop.png
      - assets/images/templateshop.png
      - assets/images/magnet-blast.png
+     - assets/images/slashed-shield.png
+     - assets/images/hearts.png
+     - assets/images/all-for-one.png
+     - assets/images/rupee.png
+     - assets/images/charged-arrow.png
+     - assets/images/chest-armor.png
+     - assets/images/eagle-emblem.png
+     - assets/images/beanstalk.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

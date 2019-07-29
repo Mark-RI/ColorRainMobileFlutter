@@ -20,7 +20,15 @@ void main() async {
     'play.png',
     'shop.png',
     'templateshop.png',
-    'magnet-blast.png'
+    'magnet-blast.png',
+    'slashed-shield.png',
+    'hearts.png',
+    'all-for-one.png',
+    'rupee',
+    'charged-arrow',
+    'chest-armor',
+    'eagle-emblem',
+    'beanstalk',
   ]);
 
   Util flameUtil = Util();
