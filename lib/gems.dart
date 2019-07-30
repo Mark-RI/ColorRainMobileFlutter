@@ -44,7 +44,7 @@ class GemsDisplay {
 
   void render(Canvas c) {
     painter.paint(c, position);
-    gemRect = Rect.fromLTWH(game.screenSize.width - (game.tileSize) - painter.width, game.tileSize * .35, game.raintileSize * 1.2, game.raintileSize);
+    gemRect = Rect.fromLTWH(game.screenSize.width - (game.tileSize) - (painter.width * .93), game.tileSize * .435, game.raintileSize * 1.2, game.raintileSize);
     gem.renderRect(c, gemRect);
   }
 }

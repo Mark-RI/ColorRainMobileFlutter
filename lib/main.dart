@@ -29,6 +29,7 @@ void main() async {
     'chest-armor',
     'eagle-emblem',
     'beanstalk',
+    'back',
   ]);
 
   Util flameUtil = Util();

@@ -4,19 +4,19 @@ import 'package:flame/sprite.dart';
 import 'package:langaw/langaw-game.dart';
 import 'package:langaw/view.dart';
 
-class Shop {
+class Back {
   final LangawGame game;
   Rect rect;
   Sprite sprite;
 
-  Shop(this.game) {
+  Back(this.game) {
     rect = Rect.fromLTWH(
-      (game.screenSize.width - game.tileSize) / 2,
-      (game.screenSize.height * .75) - (game.tileSize * 1.75),
-      game.tileSize,
-      game.tileSize,
+      game.tileSize * 0.52346,
+      game.tileSize * .25,
+      game.tileSize * 0.9 * 0.52346,
+      game.tileSize * 0.9 * 0.8,
     );
-    sprite = Sprite('shop.png');
+    sprite = Sprite('back.png');
   }
 
   void render(Canvas c) {
@@ -24,7 +24,6 @@ class Shop {
   }
 
   void onTapDown() {
-    game.activeView = View.shopping;
-//    sleep(const Duration(milliseconds:50));
+    game.activeView = View.home;
   }
 }

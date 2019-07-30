@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   flame: ^0.14.2
   shared_preferences: ^0.5.1+2
+  dart_random_choice: ^0.0.2
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +53,7 @@ flutter:
      - assets/images/chest-armor.png
      - assets/images/eagle-emblem.png
      - assets/images/beanstalk.png
+     - assets/images/back.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

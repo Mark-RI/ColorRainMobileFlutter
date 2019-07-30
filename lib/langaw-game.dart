@@ -27,14 +27,17 @@ import 'package:langaw/arrows.dart';
 import 'package:langaw/eagle.dart';
 import 'package:langaw/armor.dart';
 import 'package:langaw/beanstalk.dart';
+import 'package:langaw/back_button.dart';
 
 class LangawGame extends Game {
+  Back back;
   Beanstalk beanstalk;
   Eagle eagle;
   Armor armor;
   Arrows arrows;
   Rupee rupee;
   Swords swords;
+  int increasegems = 1;
   Magnet magnet;
   Shield shield;
   Heart heart;
@@ -72,8 +75,6 @@ class LangawGame extends Game {
   bool eagle_bought = false;
   bool beanstalk_bought = false;
 
-
-
   LangawGame(this.storage, this.gemsstorage) {
     initialize();
   }
@@ -94,6 +95,7 @@ class LangawGame extends Game {
     startButton = StartButton(this);
     shopDisplay = ShopDisplay(this);
     shop = Shop(this);
+    back = Back(this);
     loadShop();
   }
 
@@ -157,6 +159,7 @@ class LangawGame extends Game {
     if (activeView == View.shopping && armor_bought == true) armor.render(canvas);
     if (activeView == View.shopping && eagle_bought == true) eagle.render(canvas);
     if (activeView == View.shopping && beanstalk_bought == true) beanstalk.render(canvas);
+    if (activeView == View.shopping) back.render(canvas);
     }
 
   void update(double t) {
@@ -175,7 +178,7 @@ class LangawGame extends Game {
           storage.setInt('highscore', score);
           highscoreDisplay.updateHighscore();
         }
-        counter = (gemsstorage.getInt('gems') ?? 0) + 1;
+        counter = (gemsstorage.getInt('gems') ?? 0) + increasegems;
         gemsstorage.setInt('gems', counter);
         gemsdisplay.updateGems();
       }
@@ -214,12 +217,17 @@ class LangawGame extends Game {
         shop.onTapDown();
         buy = false;
       }
+
       if (startButton.rect.contains(d.globalPosition)) {
         homeView.onTapDown();
       }
     }
 
-
+    if(activeView == View.shopping) {
+      if (back.rect.contains(d.globalPosition)) {
+        back.onTapDown();
+      }
+    }
 
     if (activeView == View.playing) {
       Offset pos = d.globalPosition;
@@ -263,6 +271,7 @@ class LangawGame extends Game {
           swords = Swords(this, shoppingview.x, shoppingview.y);
         }
         if (shoppingview.power == 'rupee'){
+          increasegems = 2;
           rupee_bought = true;
           rupee = Rupee(this, shoppingview.x, shoppingview.y);
         }
