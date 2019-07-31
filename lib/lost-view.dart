@@ -43,4 +43,8 @@ class LostView {
     game.score = 0;
     game.activeView = View.playing;
   }
+  void onTapDownHome() {
+    game.score = 0;
+    game.activeView = View.home;
+  }
 }

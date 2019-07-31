@@ -10,6 +10,7 @@ class Fly{
   Rect flyRect;
 //  Paint flyPaint;
   bool isLeft = false;
+  bool extra_live = false;
   bool isRight = false;
   bool isUp = false;
   double x;
@@ -41,7 +42,7 @@ class Fly{
         flyRect = flyRect.translate(game.tileSize * 7 * t, 0);
       }
     }
-    if (isUp){
+    if (isUp && extra_live == false){
       if (pixel_pos < 3) {
         pixel_pos += 1;
         y += game.tileSize * -2;
@@ -58,8 +59,14 @@ class Fly{
         isRight = false;
         y += game.tileSize * 6;
         flyRect = flyRect.translate(0, game.tileSize * 6);
-
+        if(game.heart_bought){
+          extra_live = true;
+        }
       }
+    }
+    if (isUp && extra_live == true){
+      extra_live = false;
+      isUp = false;
     }
   }
 }

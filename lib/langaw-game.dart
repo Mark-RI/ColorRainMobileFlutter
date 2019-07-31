@@ -27,6 +27,7 @@ import 'package:langaw/arrows.dart';
 import 'package:langaw/eagle.dart';
 import 'package:langaw/armor.dart';
 import 'package:langaw/beanstalk.dart';
+import 'package:langaw/homebutton.dart';
 import 'package:langaw/back_button.dart';
 
 class LangawGame extends Game {
@@ -50,6 +51,7 @@ class LangawGame extends Game {
   final SharedPreferences gemsstorage;
   View activeView;
   StartButton startButton;
+  HomeButton homeButton;
   LostView lostView;
   HomeView homeView;
   Size screenSize;
@@ -93,6 +95,7 @@ class LangawGame extends Game {
     highscoreDisplay = HighscoreDisplay(this);
     gemsdisplay = GemsDisplay(this);
     startButton = StartButton(this);
+    homeButton = HomeButton(this);
     shopDisplay = ShopDisplay(this);
     shop = Shop(this);
     back = Back(this);
@@ -147,6 +150,9 @@ class LangawGame extends Game {
     if (activeView == View.lost) highscoreDisplay.render(canvas);
     if (activeView == View.home || activeView == View.lost) {
       startButton.render(canvas);
+    }
+    if (activeView == View.lost) {
+      homeButton.render(canvas);
     }
     if (activeView == View.home) shop.render(canvas);
     if (activeView == View.shopping) shopDisplay.render(canvas);
@@ -210,6 +216,9 @@ class LangawGame extends Game {
       if (startButton.rect.contains(d.globalPosition)) {
         lostView.onTapDown();
       }
+      if (homeButton.rect.contains(d.globalPosition)) {
+        lostView.onTapDownHome();
+      }
     }
 
     if (activeView == View.home) {
@@ -263,6 +272,7 @@ class LangawGame extends Game {
           shield = Shield(this, shoppingview.x, shoppingview.y);
         }
         if (shoppingview.power == 'heart'){
+          fly.extra_live = true;
           heart_bought = true;
           heart = Heart(this, shoppingview.x, shoppingview.y);
         }

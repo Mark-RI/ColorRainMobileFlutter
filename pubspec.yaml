@@ -54,6 +54,7 @@ flutter:
      - assets/images/eagle-emblem.png
      - assets/images/beanstalk.png
      - assets/images/back.png
+     - assets/images/home.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

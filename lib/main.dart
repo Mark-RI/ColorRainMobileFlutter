@@ -30,6 +30,7 @@ void main() async {
     'eagle-emblem',
     'beanstalk',
     'back',
+    'home',
   ]);
 
   Util flameUtil = Util();
