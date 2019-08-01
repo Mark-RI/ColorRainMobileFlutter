@@ -16,16 +16,49 @@ class Rain {
   Random rnd;
   List rainXpos;
   List rainYpos;
+  List colors2;
   List colors;
   int colorGreen = 0xff6ab04c;
   int colorRed = 0xffee5253;
   int colorYellow = 0xfffeca57;
   int colorBlue = 0xff54a0ff;
+  int colorWhite = 0xffffffff;
   int rainColor;
 
 
   Rain(this.game) {
-    colors = [colorGreen, colorRed, colorYellow, colorBlue];
+    colors2 = [colorGreen, colorBlue, colorRed, colorYellow];
+    colors = [
+      colorGreen,
+      colorRed,
+      colorYellow,
+      colorBlue,
+      colorGreen,
+      colorRed,
+      colorYellow,
+      colorBlue,
+      colorGreen,
+      colorRed,
+      colorYellow,
+      colorBlue,
+      colorGreen,
+      colorRed,
+      colorYellow,
+      colorBlue,
+      colorGreen,
+      colorRed,
+      colorYellow,
+      colorBlue,
+      colorGreen,
+      colorRed,
+      colorYellow,
+      colorBlue,
+      colorGreen,
+      colorRed,
+      colorYellow,
+      colorBlue,
+      colorWhite
+    ];
     rainXpos = [
       game.tileSize,
       game.tileSize + (game.raintileSize * 2),
@@ -51,18 +84,47 @@ class Rain {
     this.x = x;
     rainRect = Rect.fromLTWH(x, y, game.raintileSize, game.raintileSize);
     rainPaint = Paint();
-    if (game.activeView == View.playing && game.beanstalk_bought == true){
-      if (game.amountRain < 5) {
+    if (game.activeView == View.playing && game.beanstalk_bought == true) {
+      if (game.amountRain < 4) {
         rainColor = colorGreen;
+        rainPaint.color = Color(rainColor);
       }
-      else{
-        rainColor = colors[rnd.nextInt(colors.length)];
+      else {
+        if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
+            game.arrows_bought || game.armor_bought || game.shield_bought) {
+          if (game.powercount < 3) {
+            rainColor = colors[rnd.nextInt(colors.length)];
+            rainPaint.color = Color(rainColor);
+          }
+          else {
+            rainColor = colors2[rnd.nextInt(colors2.length)];
+            rainPaint.color = Color(rainColor);
+          }
+        }
+        else {
+          rainColor = colors2[rnd.nextInt(colors2.length)];
+          rainPaint.color = Color(rainColor);
+        }
       }
     }
-    if (game.beanstalk_bought == false || game.activeView == View.lost|| game.activeView == View.home){
-      rainColor = colors[rnd.nextInt(colors.length)];
+    if (game.beanstalk_bought == false || game.activeView == View.lost ||
+        game.activeView == View.home) {
+      if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
+          game.arrows_bought || game.armor_bought || game.shield_bought) {
+        if (game.powercount < 3) {
+          rainColor = colors[rnd.nextInt(colors.length)];
+          rainPaint.color = Color(rainColor);
+        }
+        else {
+          rainColor = colors2[rnd.nextInt(colors2.length)];
+          rainPaint.color = Color(rainColor);
+        }
+      }
+      else {
+        rainColor = colors2[rnd.nextInt(colors2.length)];
+        rainPaint.color = Color(rainColor);
+      }
     }
-    rainPaint.color = Color(rainColor);
   }
 
   void render(Canvas c) {
@@ -86,6 +148,15 @@ class Rain {
         onScreen = false;
         game.homerains.removeWhere((Rain rain) => (rain.onScreen == false));
       }
+    }
+    if (game.powercount >= 3) {
+      game.rains.forEach((Rain rain) {
+        if(rain.rainColor == colorWhite) {
+        print("elimianted");
+        onScreen = false;
+        game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
+        }
+      });
     }
   }
 }

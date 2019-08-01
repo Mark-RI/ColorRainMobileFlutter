@@ -20,6 +20,7 @@ import 'package:langaw/shopping.dart';
 import 'package:langaw/shoptext.dart';
 import 'package:langaw/magnet.dart';
 import 'package:langaw/shield.dart';
+import 'package:dart_random_choice/dart_random_choice.dart';
 import 'package:langaw/heart.dart';
 import 'package:langaw/swords.dart';
 import 'package:langaw/rupee.dart';
@@ -29,6 +30,7 @@ import 'package:langaw/armor.dart';
 import 'package:langaw/beanstalk.dart';
 import 'package:langaw/homebutton.dart';
 import 'package:langaw/back_button.dart';
+import 'package:langaw/render_power.dart';
 
 class LangawGame extends Game {
   Back back;
@@ -44,6 +46,7 @@ class LangawGame extends Game {
   Heart heart;
   HighscoreDisplay highscoreDisplay;
   GemsDisplay gemsdisplay;
+  List<Powers> power_up;
   List<ShoppingView> shoppingView;
   ShopDisplay shopDisplay;
   Shop shop;
@@ -76,6 +79,10 @@ class LangawGame extends Game {
   bool armor_bought = false;
   bool eagle_bought = false;
   bool beanstalk_bought = false;
+  List powers = [];
+  var power;
+  int powercount = 0;
+  double powerx = -2.5;
 
   LangawGame(this.storage, this.gemsstorage) {
     initialize();
@@ -83,6 +90,7 @@ class LangawGame extends Game {
 
   void initialize() async {
     shoppingView = List<ShoppingView>();
+    power_up = List<Powers>();
     homerains = List<Rain>();
     rains = List<Rain>();
     resize(await Flame.util.initialDimensions());
@@ -166,18 +174,23 @@ class LangawGame extends Game {
     if (activeView == View.shopping && eagle_bought == true) eagle.render(canvas);
     if (activeView == View.shopping && beanstalk_bought == true) beanstalk.render(canvas);
     if (activeView == View.shopping) back.render(canvas);
+    if (activeView == View.playing) power_up.forEach((Powers powers) => powers.render(canvas));
     }
 
   void update(double t) {
     if (activeView == View.playing) fly.update(t);
     if (activeView == View.playing) rains.forEach((Rain rain) =>
         rain.update(t));
-    if (activeView == View.home || activeView == View.lost) homerains.forEach((
-        Rain rain) => rain.update(t));
+    if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.update(t));
     if (activeView == View.playing) rains.forEach((Rain rain) {
-      if (rain.rainColor == rain.colorGreen &&
-          rain.y > fly.y + tileSize - raintileSize &&
-          rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
+      if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
+        powercount += 1;
+        print(powercount);
+        powerx += 2.5;
+        power = randomChoice(powers);
+        power_up.add(Powers(this, powerx, 10, power));
+      }
+      if (rain.rainColor == rain.colorGreen && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
         amountRain += 1;
         score += 1;
         if (score > (storage.getInt('highscore') ?? 0)) {
@@ -264,10 +277,12 @@ class LangawGame extends Game {
         gemsdisplay.updateGems();
         shoppingview.bought = true;
         if (shoppingview.power == 'magnet'){
+          powers.add('magnet-blast.png');
           magnet_bought = true;
           magnet = Magnet(this, shoppingview.x, shoppingview.y);
         }
         if (shoppingview.power == 'shield'){
+          powers.add('slashed-shield.png');
           shield_bought = true;
           shield = Shield(this, shoppingview.x, shoppingview.y);
         }
@@ -277,6 +292,7 @@ class LangawGame extends Game {
           heart = Heart(this, shoppingview.x, shoppingview.y);
         }
         if (shoppingview.power == 'swords'){
+          powers.add('all-for-one.png');
           swords_bought = true;
           swords = Swords(this, shoppingview.x, shoppingview.y);
         }
@@ -286,14 +302,17 @@ class LangawGame extends Game {
           rupee = Rupee(this, shoppingview.x, shoppingview.y);
         }
         if (shoppingview.power == 'arrows'){
+          powers.add('charged-arrow.png');
           arrows_bought = true;
           arrows = Arrows(this, shoppingview.x, shoppingview.y);
         }
         if (shoppingview.power == 'armor'){
+          powers.add('chest-armor.png');
           armor_bought = true;
           armor = Armor(this, shoppingview.x, shoppingview.y);
         }
         if (shoppingview.power == 'eagle'){
+          powers.add('eagle-emblem.png');
           eagle_bought = true;
           eagle = Eagle(this, shoppingview.x, shoppingview.y);
         }

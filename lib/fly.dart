@@ -3,6 +3,7 @@ import 'package:langaw/langaw-game.dart';// Access to screen size
 import 'package:langaw/rain.dart';
 import 'package:langaw/view.dart';
 import 'package:flame/sprite.dart';
+import 'package:langaw/render_power.dart';
 
 // Rect instances are immutable. However its shift and translate methods can be used to move it.
 class Fly{
@@ -51,6 +52,9 @@ class Fly{
       }
       else{
         game.activeView = View.lost;
+        game.power_up = List<Powers>();
+        game.powercount = 0;
+        game.powerx = -2.5;
         game.rains = List<Rain>();
         game.amountRain = 1;
         pixel_pos = 0;
