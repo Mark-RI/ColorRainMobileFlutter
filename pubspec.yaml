@@ -55,7 +55,8 @@ flutter:
      - assets/images/beanstalk.png
      - assets/images/back.png
      - assets/images/home.png
-     - assets/images/frame-1.png
+     - assets/images/heart-pixel.png
+     - assets/images/heart-lost.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

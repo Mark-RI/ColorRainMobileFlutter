@@ -18,6 +18,7 @@ class Fly{
   double y;
   int pixel_pos = 0;
   Sprite ball;
+  int pos;
 
   Fly(this.game, this.x, this.y) {
     ball = Sprite('circle.png');
@@ -43,8 +44,14 @@ class Fly{
         flyRect = flyRect.translate(game.tileSize * 7 * t, 0);
       }
     }
-    if (isUp && extra_live == false){
-      if (pixel_pos < 3) {
+    if(extra_live){
+      pos = 3;
+    }
+    else{
+      pos = 2;
+    }
+    if (isUp){
+      if (pixel_pos < pos) {
         pixel_pos += 1;
         y += game.tileSize * -2;
         flyRect = flyRect.translate(0, game.tileSize * -2);
@@ -63,14 +70,16 @@ class Fly{
         isRight = false;
         y += game.tileSize * 6;
         flyRect = flyRect.translate(0, game.tileSize * 6);
+        game.heart_add = true;
         if(game.heart_bought){
+          game.heart_pixel_add = true;
           extra_live = true;
         }
       }
     }
-    if (isUp && extra_live == true){
-      extra_live = false;
-      isUp = false;
-    }
+//    if (isUp && extra_live == true){
+//      extra_live = false;
+//      isUp = false;
+//    }
   }
 }

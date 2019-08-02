@@ -152,7 +152,6 @@ class Rain {
     if (game.powercount >= 3) {
       game.rains.forEach((Rain rain) {
         if(rain.rainColor == colorWhite) {
-        print("elimianted");
         onScreen = false;
         game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
         }

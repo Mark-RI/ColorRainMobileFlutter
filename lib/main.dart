@@ -24,13 +24,15 @@ void main() async {
     'slashed-shield.png',
     'hearts.png',
     'all-for-one.png',
-    'rupee',
-    'charged-arrow',
-    'chest-armor',
-    'eagle-emblem',
-    'beanstalk',
-    'back',
-    'home',
+    'rupee.png',
+    'charged-arrow.png',
+    'chest-armor.png',
+    'eagle-emblem.png',
+    'beanstalk.png',
+    'back.png',
+    'home.png',
+    'heart-pixel.png',
+    'heart-lost.png',
   ]);
 
   Util flameUtil = Util();

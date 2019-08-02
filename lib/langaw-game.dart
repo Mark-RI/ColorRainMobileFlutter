@@ -30,6 +30,7 @@ import 'package:langaw/armor.dart';
 import 'package:langaw/beanstalk.dart';
 import 'package:langaw/homebutton.dart';
 import 'package:langaw/back_button.dart';
+import 'package:langaw/heart-pixel.dart';
 import 'package:langaw/render_power.dart';
 
 class LangawGame extends Game {
@@ -46,6 +47,7 @@ class LangawGame extends Game {
   Heart heart;
   HighscoreDisplay highscoreDisplay;
   GemsDisplay gemsdisplay;
+  List<HeartPixel> heart_pixel;
   List<Powers> power_up;
   List<ShoppingView> shoppingView;
   ShopDisplay shopDisplay;
@@ -83,6 +85,9 @@ class LangawGame extends Game {
   var power;
   int powercount = 0;
   double powerx = -2.5;
+  bool heart_pixel_add = false;
+  bool heart_add = true;
+  int next_heart;
 
   LangawGame(this.storage, this.gemsstorage) {
     initialize();
@@ -93,6 +98,7 @@ class LangawGame extends Game {
     power_up = List<Powers>();
     homerains = List<Rain>();
     rains = List<Rain>();
+    heart_pixel = List<HeartPixel>();
     resize(await Flame.util.initialDimensions());
     score = 0;
     scoreDisplay = ScoreDisplay(this);
@@ -122,6 +128,20 @@ class LangawGame extends Game {
     shoppingView.add(ShoppingView(this, 5, 7.5, 200, 6.9, 12.75, '200', 'eagle'));
   }
 
+  void loadHeartPixel() {
+    next_heart = 1;
+    heart_pixel.add(HeartPixel(this, 3.6, 1, 2));
+    heart_pixel.add(HeartPixel(this, 4.4, 1, 3));
+    heart_pixel.add(HeartPixel(this, 5.2, 1, 4));
+    heart_add = false;
+  }
+
+  void loadExtraHeart() {
+    next_heart = 0;
+    heart_pixel.add(HeartPixel(this, 2.8, 1, 1));
+    heart_pixel_add = false;
+  }
+
   void spawnFly() {
     fly = Fly(this, (screenSize.width - tileSize) / 2,
         screenSize.height - (btileSize * 2) - (tileSize * 2));
@@ -145,10 +165,11 @@ class LangawGame extends Game {
         0xff1e1e1e); // Fuel Town from FlatUIColors.com be careful as some color can be harmful
     canvas.drawRect(bgRect, bgPaint); // Canvas needs a size and a color
     spawnRain();
-    if (activeView == View.playing) rains.forEach((Rain rain) =>
-        rain.render(canvas));
-    if (activeView == View.home || activeView == View.lost) homerains.forEach((
-        Rain rain) => rain.render(canvas));
+    if (heart_add == true && activeView == View.playing) loadHeartPixel();
+    if (heart_pixel_add == true && activeView == View.playing) loadExtraHeart();
+    print(next_heart);
+    if (activeView == View.playing) rains.forEach((Rain rain) => rain.render(canvas));
+    if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.render(canvas));
     if (activeView == View.playing) fly.render(canvas);
     if (activeView == View.playing) scoreDisplay.render(canvas);
     if (activeView == View.home) homeView.render(canvas);
@@ -175,6 +196,7 @@ class LangawGame extends Game {
     if (activeView == View.shopping && beanstalk_bought == true) beanstalk.render(canvas);
     if (activeView == View.shopping) back.render(canvas);
     if (activeView == View.playing) power_up.forEach((Powers powers) => powers.render(canvas));
+    if (activeView == View.playing) heart_pixel.forEach((HeartPixel heartPixel) => heartPixel.render(canvas));
     }
 
   void update(double t) {
@@ -206,6 +228,12 @@ class LangawGame extends Game {
         if (rain.y > fly.y + tileSize - raintileSize &&
             rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
           fly.isUp = true;
+          next_heart += 1;
+          heart_pixel.forEach((HeartPixel heartPixel) {
+            if(heartPixel.pos == next_heart){
+              heartPixel.live_lost = true;
+            }
+          });
         }
       }
     });
@@ -214,6 +242,7 @@ class LangawGame extends Game {
     if (activeView == View.lost) lostView.update(t);
     if (activeView == View.shopping) shopDisplay.update(t);
     if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.update());
+    if (activeView == View.playing) heart_pixel.forEach((HeartPixel heartPixel) => heartPixel.update());
   }
 
   void resize(Size size) {
@@ -287,6 +316,7 @@ class LangawGame extends Game {
           shield = Shield(this, shoppingview.x, shoppingview.y);
         }
         if (shoppingview.power == 'heart'){
+          heart_pixel_add = true;
           fly.extra_live = true;
           heart_bought = true;
           heart = Heart(this, shoppingview.x, shoppingview.y);
