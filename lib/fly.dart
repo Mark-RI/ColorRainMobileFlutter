@@ -68,18 +68,18 @@ class Fly{
         isUp = false;
         isLeft = false;
         isRight = false;
-        y += game.tileSize * 6;
-        flyRect = flyRect.translate(0, game.tileSize * 6);
         game.heart_add = true;
         if(game.heart_bought){
+          y += game.tileSize * 6;
+          flyRect = flyRect.translate(0, game.tileSize * 6);
           game.heart_pixel_add = true;
           extra_live = true;
         }
+        else{
+          y += game.tileSize * 4;
+          flyRect = flyRect.translate(0, game.tileSize * 4);
+        }
       }
     }
-//    if (isUp && extra_live == true){
-//      extra_live = false;
-//      isUp = false;
-//    }
   }
 }
