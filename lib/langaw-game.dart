@@ -47,7 +47,7 @@ class LangawGame extends Game {
   Heart heart;
   HighscoreDisplay highscoreDisplay;
   GemsDisplay gemsdisplay;
-  List<HeartPixel> heart_pixel;
+//  List<HeartPixel> heart_pixel;
   List<Powers> power_up;
   List<ShoppingView> shoppingView;
   ShopDisplay shopDisplay;
@@ -83,11 +83,13 @@ class LangawGame extends Game {
   bool beanstalk_bought = false;
   List powers = [];
   var power;
-  int powercount = 0;
-  double powerx = -2.5;
+  double powerx;
   bool heart_pixel_add = false;
   bool heart_add = true;
-  int next_heart;
+  bool firstFree = true;
+  bool secondFree = true;
+  bool thirdFree = true;
+//  int next_heart;
 
   LangawGame(this.storage, this.gemsstorage) {
     initialize();
@@ -98,7 +100,7 @@ class LangawGame extends Game {
     power_up = List<Powers>();
     homerains = List<Rain>();
     rains = List<Rain>();
-    heart_pixel = List<HeartPixel>();
+//    heart_pixel = List<HeartPixel>();
     resize(await Flame.util.initialDimensions());
     score = 0;
     scoreDisplay = ScoreDisplay(this);
@@ -128,19 +130,19 @@ class LangawGame extends Game {
     shoppingView.add(ShoppingView(this, 5, 7.5, 200, 6.9, 12.75, '200', 'eagle'));
   }
 
-  void loadHeartPixel() {
-    next_heart = 1;
-    heart_pixel.add(HeartPixel(this, 3.6, 1, 2));
-    heart_pixel.add(HeartPixel(this, 4.4, 1, 3));
-    heart_pixel.add(HeartPixel(this, 5.2, 1, 4));
-    heart_add = false;
-  }
+//  void loadHeartPixel() {
+//    next_heart = 1;
+//    heart_pixel.add(HeartPixel(this, 3.6, 1, 2));
+//    heart_pixel.add(HeartPixel(this, 4.4, 1, 3));
+//    heart_pixel.add(HeartPixel(this, 5.2, 1, 4));
+//    heart_add = false;
+//  }
 
-  void loadExtraHeart() {
-    next_heart = 0;
-    heart_pixel.add(HeartPixel(this, 2.8, 1, 1));
-    heart_pixel_add = false;
-  }
+//  void loadExtraHeart() {
+//   next_heart = 0;
+//    heart_pixel.add(HeartPixel(this, 2.8, 1, 1));
+//    heart_pixel_add = false;
+//  }
 
   void spawnFly() {
     fly = Fly(this, (screenSize.width - tileSize) / 2,
@@ -150,6 +152,11 @@ class LangawGame extends Game {
   void spawnRain() {
     if (activeView == View.playing) if (amountRain > rains.length) {
       rains.add(Rain(this));
+      power_up.forEach((Powers power) {
+        if(power.active){
+          power.raincount += 1;
+        }
+      });
     }
     if (activeView == View.home || activeView == View.lost)
       if (homeamountRain > homerains.length) {
@@ -165,9 +172,9 @@ class LangawGame extends Game {
         0xff1e1e1e); // Fuel Town from FlatUIColors.com be careful as some color can be harmful
     canvas.drawRect(bgRect, bgPaint); // Canvas needs a size and a color
     spawnRain();
-    if (heart_add == true && activeView == View.playing) loadHeartPixel();
-    if (heart_pixel_add == true && activeView == View.playing) loadExtraHeart();
-    print(next_heart);
+//    if (heart_add == true && activeView == View.playing) loadHeartPixel();
+//    if (heart_pixel_add == true && activeView == View.playing) loadExtraHeart();
+//    print(next_heart);
     if (activeView == View.playing) rains.forEach((Rain rain) => rain.render(canvas));
     if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.render(canvas));
     if (activeView == View.playing) fly.render(canvas);
@@ -196,7 +203,7 @@ class LangawGame extends Game {
     if (activeView == View.shopping && beanstalk_bought == true) beanstalk.render(canvas);
     if (activeView == View.shopping) back.render(canvas);
     if (activeView == View.playing) power_up.forEach((Powers powers) => powers.render(canvas));
-    if (activeView == View.playing) heart_pixel.forEach((HeartPixel heartPixel) => heartPixel.render(canvas));
+//    if (activeView == View.playing) heart_pixel.forEach((HeartPixel heartPixel) => heartPixel.render(canvas));
     }
 
   void update(double t) {
@@ -206,11 +213,23 @@ class LangawGame extends Game {
     if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.update(t));
     if (activeView == View.playing) rains.forEach((Rain rain) {
       if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
-        powercount += 1;
-        print(powercount);
-        powerx += 2.5;
-        power = randomChoice(powers);
-        power_up.add(Powers(this, powerx, 10, power));
+        if(firstFree){
+          powerx = 0;
+          power = randomChoice(powers);
+          power_up.add(Powers(this, powerx, 9.5, power, 1));
+          firstFree = false;
+        }else if(secondFree){
+          powerx = 2.5;
+          power = randomChoice(powers);
+          power_up.add(Powers(this, powerx, 9.5, power, 2));
+          secondFree = false;
+        }else if(thirdFree){
+          powerx = 5;
+          power = randomChoice(powers);
+          power_up.add(Powers(this, powerx, 9.5, power, 3));
+          thirdFree = false;
+        }
+
       }
       if (rain.rainColor == rain.colorGreen && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
         amountRain += 1;
@@ -228,21 +247,22 @@ class LangawGame extends Game {
         if (rain.y > fly.y + tileSize - raintileSize &&
             rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
           fly.isUp = true;
-          next_heart += 1;
-          heart_pixel.forEach((HeartPixel heartPixel) {
-            if(heartPixel.pos == next_heart){
-              heartPixel.live_lost = true;
+//          next_heart += 1;
+//          heart_pixel.forEach((HeartPixel heartPixel) {
+//           if(heartPixel.pos == next_heart){
+//              heartPixel.live_lost = true;
             }
-          });
+//          });
         }
-      }
+//      }
     });
     if (activeView == View.playing) scoreDisplay.update(t);
     if (activeView == View.home) homeView.update(t);
     if (activeView == View.lost) lostView.update(t);
     if (activeView == View.shopping) shopDisplay.update(t);
     if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.update());
-    if (activeView == View.playing) heart_pixel.forEach((HeartPixel heartPixel) => heartPixel.update());
+//    if (activeView == View.playing) heart_pixel.forEach((HeartPixel heartPixel) => heartPixel.update());
+    if (activeView == View.playing) power_up.forEach((Powers power) => power.eliminate());
   }
 
   void resize(Size size) {
@@ -293,6 +313,7 @@ class LangawGame extends Game {
       };
     }
   }
+
   void onTapUp(TapUpDetails d) {
     fly.isRight = false;
     fly.isLeft = false;
@@ -353,5 +374,13 @@ class LangawGame extends Game {
         shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
       }
     });
+
+    if(activeView == View.playing){
+      power_up.forEach((Powers power){
+        if(power.rect.contains(d.globalPosition)){
+          power.active = true;
+        }
+      });
+    }
   }
 }

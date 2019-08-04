@@ -11,9 +11,12 @@ class Powers {
   Sprite background;
   double x;
   double y;
+  bool active = false;
   var power;
+  int raincount = 0;
+  int pos;
 
-  Powers(this.game, this.x, this.y, this.power) {
+  Powers(this.game, this.x, this.y, this.power, this.pos) {
     rect = Rect.fromLTWH(
       game.tileSize + (game.tileSize * x) + ((game.tileSize * 2.2 - game.tileSize * 1.6)/ 2),
       game.tileSize + (game.tileSize * 1.263 * y) + ((game.tileSize * 2.2 - game.tileSize * 1.6)/ 2),
@@ -33,5 +36,20 @@ class Powers {
   void render(Canvas c) {
     background.renderRect(c, rect_background);
     sprite.renderRect(c, rect);
+  }
+
+  void eliminate(){
+    if(active == true) {
+      game.power_up.removeWhere((Powers power) => (power.raincount == 20));
+      if(pos == 1){
+        game.firstFree = true;
+      }
+      if(pos == 2){
+        game.secondFree = true;
+      }
+      if(pos == 3){
+        game.thirdFree = true;
+      }
+    }
   }
 }

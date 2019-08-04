@@ -92,7 +92,7 @@ class Rain {
       else {
         if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
             game.arrows_bought || game.armor_bought || game.shield_bought) {
-          if (game.powercount < 3) {
+          if (game.firstFree || game.secondFree || game.thirdFree) {
             rainColor = colors[rnd.nextInt(colors.length)];
             rainPaint.color = Color(rainColor);
           }
@@ -111,7 +111,7 @@ class Rain {
         game.activeView == View.home) {
       if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
           game.arrows_bought || game.armor_bought || game.shield_bought) {
-        if (game.powercount < 3) {
+        if (game.firstFree || game.secondFree || game.thirdFree) {
           rainColor = colors[rnd.nextInt(colors.length)];
           rainPaint.color = Color(rainColor);
         }
@@ -149,7 +149,7 @@ class Rain {
         game.homerains.removeWhere((Rain rain) => (rain.onScreen == false));
       }
     }
-    if (game.powercount >= 3) {
+    if (game.firstFree == false && game.secondFree == false && game.thirdFree == false) {
       game.rains.forEach((Rain rain) {
         if(rain.rainColor == colorWhite) {
         onScreen = false;

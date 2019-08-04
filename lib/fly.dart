@@ -60,8 +60,6 @@ class Fly{
       else{
         game.activeView = View.lost;
         game.power_up = List<Powers>();
-        game.powercount = 0;
-        game.powerx = -2.5;
         game.rains = List<Rain>();
         game.amountRain = 1;
         pixel_pos = 0;
@@ -69,6 +67,9 @@ class Fly{
         isLeft = false;
         isRight = false;
         game.heart_add = true;
+        game.firstFree = true;
+        game.secondFree = true;
+        game.thirdFree = true;
         if(game.heart_bought){
           y += game.tileSize * 6;
           flyRect = flyRect.translate(0, game.tileSize * 6);
