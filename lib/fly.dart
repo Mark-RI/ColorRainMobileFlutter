@@ -28,7 +28,11 @@ class Fly{
   }
 
   void render(Canvas c) {
-    ball.renderRect(c, flyRect);
+    if(game.smallActive == false){
+      ball.renderRect(c, flyRect);
+    }else{
+      ball.renderRect(c, flyRect.deflate(10));
+    }
   }
 
   void update(double t) {
@@ -50,7 +54,7 @@ class Fly{
     else{
       pos = 2;
     }
-    if (isUp){
+    if (isUp && game.shieldActive == false){
       if (pixel_pos < pos) {
         pixel_pos += 1;
         y += game.tileSize * -2;
@@ -65,6 +69,7 @@ class Fly{
         pixel_pos = 0;
         isUp = false;
         isLeft = false;
+        game.smallActive = false;
         isRight = false;
         game.heart_add = true;
         game.firstFree = true;
@@ -81,6 +86,9 @@ class Fly{
           flyRect = flyRect.translate(0, game.tileSize * 4);
         }
       }
+    }
+    if (isUp && game.shieldActive){
+      isUp = false;
     }
   }
 }

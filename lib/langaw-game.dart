@@ -89,6 +89,10 @@ class LangawGame extends Game {
   bool firstFree = true;
   bool secondFree = true;
   bool thirdFree = true;
+  bool swordActive = false;
+  bool smallActive = false;
+  bool shieldActive = false;
+  bool eagleActive = false;
 //  int next_heart;
 
   LangawGame(this.storage, this.gemsstorage) {
@@ -146,7 +150,7 @@ class LangawGame extends Game {
 
   void spawnFly() {
     fly = Fly(this, (screenSize.width - tileSize) / 2,
-        screenSize.height - (btileSize * 2) - (tileSize * 2));
+        screenSize.height - (btileSize * 2) - (tileSize / 8));
   }
 
   void spawnRain() {
@@ -165,12 +169,14 @@ class LangawGame extends Game {
   }
 
   void render(Canvas canvas) {
-    Rect bgRect = Rect.fromLTWH(
-        0, 0, screenSize.width, screenSize.height); // L and T are coordinates
+    Rect bgRect = Rect.fromLTWH(0, 0, screenSize.width, screenSize.height); // L and T are coordinates
     Paint bgPaint = Paint();
-    bgPaint.color = Color(
-        0xff1e1e1e); // Fuel Town from FlatUIColors.com be careful as some color can be harmful
+    bgPaint.color = Color(0xff1e1e1e); // Fuel Town from FlatUIColors.com be careful as some color can be harmful
     canvas.drawRect(bgRect, bgPaint); // Canvas needs a size and a color
+    Rect lowerRect = Rect.fromLTWH(0, screenSize.height - (tileSize * 2.5), screenSize.width, tileSize * 2.5);
+    Paint lowerPaint = Paint();
+    lowerPaint.color = Color(0xff151515);
+    if (activeView == View.playing) canvas.drawRect(lowerRect, lowerPaint);
     spawnRain();
 //    if (heart_add == true && activeView == View.playing) loadHeartPixel();
 //    if (heart_pixel_add == true && activeView == View.playing) loadExtraHeart();
@@ -208,25 +214,24 @@ class LangawGame extends Game {
 
   void update(double t) {
     if (activeView == View.playing) fly.update(t);
-    if (activeView == View.playing) rains.forEach((Rain rain) =>
-        rain.update(t));
+    if (activeView == View.playing) rains.forEach((Rain rain) => rain.update(t));
     if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.update(t));
     if (activeView == View.playing) rains.forEach((Rain rain) {
       if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
         if(firstFree){
           powerx = 0;
           power = randomChoice(powers);
-          power_up.add(Powers(this, powerx, 9.5, power, 1));
+          power_up.add(Powers(this, powerx, 10, power, 1));
           firstFree = false;
         }else if(secondFree){
           powerx = 2.5;
           power = randomChoice(powers);
-          power_up.add(Powers(this, powerx, 9.5, power, 2));
+          power_up.add(Powers(this, powerx, 10, power, 2));
           secondFree = false;
         }else if(thirdFree){
           powerx = 5;
           power = randomChoice(powers);
-          power_up.add(Powers(this, powerx, 9.5, power, 3));
+          power_up.add(Powers(this, powerx, 10, power, 3));
           thirdFree = false;
         }
 
@@ -242,8 +247,7 @@ class LangawGame extends Game {
         gemsstorage.setInt('gems', counter);
         gemsdisplay.updateGems();
       }
-      if (rain.rainColor == rain.colorRed || rain.rainColor == rain.colorBlue ||
-          rain.rainColor == rain.colorYellow) {
+      if (rain.rainColor == rain.colorRed || rain.rainColor == rain.colorBlue || rain.rainColor == rain.colorYellow) {
         if (rain.y > fly.y + tileSize - raintileSize &&
             rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
           fly.isUp = true;
@@ -303,11 +307,12 @@ class LangawGame extends Game {
     if (activeView == View.playing) {
       Offset pos = d.globalPosition;
       double pos_x = pos.dx;
-      if (fly.x < pos_x) {
+      double pos_y = pos.dy;
+      if (fly.x < pos_x && pos_y < screenSize.height - (tileSize * 2.5)) {
         fly.isLeft = false;
         fly.isRight = true;
       };
-      if (fly.x > pos_x) {
+      if (fly.x > pos_x && pos_y < screenSize.height - (tileSize * 2.5)) {
         fly.isLeft = true;
         fly.isRight = false;
       };

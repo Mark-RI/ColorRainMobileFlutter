@@ -24,6 +24,7 @@ class Rain {
   int colorBlue = 0xff54a0ff;
   int colorWhite = 0xffffffff;
   int rainColor;
+  int yIncrease = 0;
 
 
   Rain(this.game) {
@@ -84,12 +85,36 @@ class Rain {
     this.x = x;
     rainRect = Rect.fromLTWH(x, y, game.raintileSize, game.raintileSize);
     rainPaint = Paint();
-    if (game.activeView == View.playing && game.beanstalk_bought == true) {
-      if (game.amountRain < 4) {
-        rainColor = colorGreen;
-        rainPaint.color = Color(rainColor);
+    if (game.eagleActive) {
+      rainColor = colorGreen;
+      rainPaint.color = Color(rainColor);
+    }
+    else {
+      if (game.activeView == View.playing && game.beanstalk_bought == true) {
+        if (game.amountRain < 4) {
+          rainColor = colorGreen;
+          rainPaint.color = Color(rainColor);
+        }
+        else {
+          if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
+              game.arrows_bought || game.armor_bought || game.shield_bought) {
+            if (game.firstFree || game.secondFree || game.thirdFree) {
+              rainColor = colors[rnd.nextInt(colors.length)];
+              rainPaint.color = Color(rainColor);
+            }
+            else {
+              rainColor = colors2[rnd.nextInt(colors2.length)];
+              rainPaint.color = Color(rainColor);
+            }
+          }
+          else {
+            rainColor = colors2[rnd.nextInt(colors2.length)];
+            rainPaint.color = Color(rainColor);
+          }
+        }
       }
-      else {
+      if (game.beanstalk_bought == false || game.activeView == View.lost ||
+          game.activeView == View.home) {
         if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
             game.arrows_bought || game.armor_bought || game.shield_bought) {
           if (game.firstFree || game.secondFree || game.thirdFree) {
@@ -107,24 +132,6 @@ class Rain {
         }
       }
     }
-    if (game.beanstalk_bought == false || game.activeView == View.lost ||
-        game.activeView == View.home) {
-      if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
-          game.arrows_bought || game.armor_bought || game.shield_bought) {
-        if (game.firstFree || game.secondFree || game.thirdFree) {
-          rainColor = colors[rnd.nextInt(colors.length)];
-          rainPaint.color = Color(rainColor);
-        }
-        else {
-          rainColor = colors2[rnd.nextInt(colors2.length)];
-          rainPaint.color = Color(rainColor);
-        }
-      }
-      else {
-        rainColor = colors2[rnd.nextInt(colors2.length)];
-        rainPaint.color = Color(rainColor);
-      }
-    }
   }
 
   void render(Canvas c) {
@@ -132,13 +139,17 @@ class Rain {
   }
 
   void update(double t) {
+    if(game.swordActive){
+      yIncrease = 100;
+    }else{
+      yIncrease = 0;
+    }
     if (game.activeView == View.playing)
-      if (y >= game.fly.y + game.tileSize - game.raintileSize) {
+      if (y >= game.fly.y + game.tileSize - game.raintileSize - yIncrease) {
         onScreen = false;
         game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
       }
-    if (game.activeView == View.playing || game.activeView == View.home ||
-        game.activeView == View.lost)
+    if (game.activeView == View.playing || game.activeView == View.home || game.activeView == View.lost)
       if (onScreen) {
         y += game.raintileSize * 9 * t;
         rainRect = rainRect.translate(0, game.raintileSize * 9 * t);
@@ -149,13 +160,13 @@ class Rain {
         game.homerains.removeWhere((Rain rain) => (rain.onScreen == false));
       }
     }
-    if (game.firstFree == false && game.secondFree == false && game.thirdFree == false) {
-      game.rains.forEach((Rain rain) {
-        if(rain.rainColor == colorWhite) {
-        onScreen = false;
-        game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
-        }
-      });
-    }
+//    if (game.firstFree == false && game.secondFree == false && game.thirdFree == false) {
+//      game.rains.forEach((Rain rain) {
+//        if(rain.rainColor == colorWhite) {
+//        onScreen = false;
+//        game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
+//        }
+//      });
+//    }
   }
 }

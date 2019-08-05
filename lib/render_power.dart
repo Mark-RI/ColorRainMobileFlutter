@@ -15,6 +15,7 @@ class Powers {
   var power;
   int raincount = 0;
   int pos;
+  int rainlimit = 0;
 
   Powers(this.game, this.x, this.y, this.power, this.pos) {
     rect = Rect.fromLTWH(
@@ -34,21 +35,57 @@ class Powers {
   }
 
   void render(Canvas c) {
-    background.renderRect(c, rect_background);
-    sprite.renderRect(c, rect);
+    if (active) {
+      background.renderRect(c, rect_background.inflate(3.5));
+      sprite.renderRect(c, rect.inflate(3.5));
+    }else{
+      background.renderRect(c, rect_background);
+      sprite.renderRect(c, rect);
+    }
   }
 
   void eliminate(){
     if(active == true) {
-      game.power_up.removeWhere((Powers power) => (power.raincount == 20));
-      if(pos == 1){
-        game.firstFree = true;
+      if(power == "eagle-emblem.png"){
+        rainlimit = 20;
+        game.eagleActive = true;
+      }else{
+        rainlimit = game.amountRain * 2;
       }
-      if(pos == 2){
-        game.secondFree = true;
+      if(power == "chest-armor.png") {
+        game.smallActive = true;
       }
-      if(pos == 3){
-        game.thirdFree = true;
+      if(power == "all-for-one.png") {
+        game.swordActive = true;
+      }
+      if(power == "slashed-shield.png") {
+        game.shieldActive = true;
+      }
+      if(raincount == rainlimit){
+        if(pos == 1){
+          game.firstFree = true;
+          game.power_up.removeWhere((Powers power) => (power.raincount == rainlimit));
+          game.smallActive = false;
+          game.swordActive = false;
+          game.shieldActive = false;
+          game.eagleActive = false;
+        }
+        if(pos == 2){
+          game.secondFree = true;
+          game.power_up.removeWhere((Powers power) => (power.raincount == rainlimit));
+          game.smallActive = false;
+          game.swordActive = false;
+          game.shieldActive = false;
+          game.eagleActive = false;
+        }
+        if(pos == 3){
+          game.thirdFree = true;
+          game.power_up.removeWhere((Powers power) => (power.raincount == rainlimit));
+          game.smallActive = false;
+          game.swordActive = false;
+          game.shieldActive = false;
+          game.eagleActive = false;
+        }
       }
     }
   }
