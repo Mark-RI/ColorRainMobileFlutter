@@ -13,6 +13,15 @@ void main() async {
 
   SharedPreferences storage = await SharedPreferences.getInstance();
   SharedPreferences gemsstorage = await SharedPreferences.getInstance();
+  SharedPreferences magnetTrue = await SharedPreferences.getInstance();
+  SharedPreferences gemsTrue = await SharedPreferences.getInstance();
+  SharedPreferences heartTrue = await SharedPreferences.getInstance();
+  SharedPreferences shieldTrue = await SharedPreferences.getInstance();
+  SharedPreferences arrowsTrue = await SharedPreferences.getInstance();
+  SharedPreferences swordsTrue = await SharedPreferences.getInstance();
+  SharedPreferences armorTrue = await SharedPreferences.getInstance();
+  SharedPreferences vineTrue = await SharedPreferences.getInstance();
+  SharedPreferences eagleTrue = await SharedPreferences.getInstance();
 
   Flame.images.loadAll(<String>[
     'circle.png',
@@ -33,13 +42,14 @@ void main() async {
     'home.png',
     'heart-pixel.png',
     'heart-lost.png',
+    'tuts.png'
   ]);
 
   Util flameUtil = Util();
   await flameUtil.fullScreen();
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
 
-  LangawGame game = LangawGame(storage, gemsstorage);
+  LangawGame game = LangawGame(storage, gemsstorage, magnetTrue, gemsTrue, heartTrue, shieldTrue, arrowsTrue, swordsTrue, armorTrue, vineTrue, eagleTrue);
   runApp(game.widget);
 
   TapGestureRecognizer tapper = TapGestureRecognizer();

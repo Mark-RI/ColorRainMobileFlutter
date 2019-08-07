@@ -25,15 +25,13 @@ class Rain {
   int colorWhite = 0xffffffff;
   int rainColor;
   int yIncrease = 0;
+//  double xCenter;
+//  double yCenter;
 
 
   Rain(this.game) {
     colors2 = [colorGreen, colorBlue, colorRed, colorYellow];
-    colors = [
-      colorGreen,
-      colorRed,
-      colorYellow,
-      colorBlue,
+    colors = [colorGreen, colorRed, colorYellow, colorBlue,
       colorGreen,
       colorRed,
       colorYellow,
@@ -79,10 +77,8 @@ class Rain {
       game.tileSize * -11
     ];
     rnd = Random();
-    double x = rainXpos[rnd.nextInt(rainXpos.length)];
-    double y = rainYpos[rnd.nextInt(rainYpos.length)];
-    this.y = y;
-    this.x = x;
+    x = rainXpos[rnd.nextInt(rainXpos.length)];
+    y = rainYpos[rnd.nextInt(rainYpos.length)];
     rainRect = Rect.fromLTWH(x, y, game.raintileSize, game.raintileSize);
     rainPaint = Paint();
     if (game.eagleActive) {
@@ -159,6 +155,9 @@ class Rain {
         onScreen = false;
         game.homerains.removeWhere((Rain rain) => (rain.onScreen == false));
       }
+    }
+    if(onScreen == false){
+      game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
     }
 //    if (game.firstFree == false && game.secondFree == false && game.thirdFree == false) {
 //      game.rains.forEach((Rain rain) {

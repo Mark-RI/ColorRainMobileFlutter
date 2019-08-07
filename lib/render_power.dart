@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:flame/sprite.dart';
 import 'package:langaw/langaw-game.dart';
 import 'package:langaw/view.dart';
+import 'package:langaw/rain.dart';
+import 'dart:math';
 
 class Powers {
   final LangawGame game;
@@ -61,6 +63,13 @@ class Powers {
       if(power == "slashed-shield.png") {
         game.shieldActive = true;
       }
+      if(power == "magnet-blast.png") {
+        game.magnetActive = true;
+      }
+      if(power == "charged-arrow.png") {
+        rainlimit = 20;
+        game.arrowsActive = true;
+      }
       if(raincount == rainlimit){
         if(pos == 1){
           game.firstFree = true;
@@ -69,6 +78,8 @@ class Powers {
           game.swordActive = false;
           game.shieldActive = false;
           game.eagleActive = false;
+          game.magnetActive = false;
+          game.arrowsActive = false;
         }
         if(pos == 2){
           game.secondFree = true;
@@ -77,6 +88,8 @@ class Powers {
           game.swordActive = false;
           game.shieldActive = false;
           game.eagleActive = false;
+          game.magnetActive = false;
+          game.arrowsActive = false;
         }
         if(pos == 3){
           game.thirdFree = true;
@@ -85,6 +98,8 @@ class Powers {
           game.swordActive = false;
           game.shieldActive = false;
           game.eagleActive = false;
+          game.magnetActive = false;
+          game.arrowsActive = false;
         }
       }
     }

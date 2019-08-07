@@ -54,6 +54,15 @@ class LangawGame extends Game {
   Shop shop;
   final SharedPreferences storage;
   final SharedPreferences gemsstorage;
+  final SharedPreferences gemsTrue;
+  final SharedPreferences magnetTrue;
+  final SharedPreferences heartTrue;
+  final SharedPreferences shieldTrue;
+  final SharedPreferences arrowsTrue;
+  final SharedPreferences swordsTrue;
+  final SharedPreferences armorTrue;
+  final SharedPreferences vineTrue;
+  final SharedPreferences eagleTrue;
   View activeView;
   StartButton startButton;
   HomeButton homeButton;
@@ -66,6 +75,7 @@ class LangawGame extends Game {
   Fly fly;
   int homeamountRain = 15;
   int amountRain = 1;
+  int temAmountRain = 0;
   List<Rain> rains;
   List<Rain> homerains;
   int score;
@@ -93,9 +103,21 @@ class LangawGame extends Game {
   bool smallActive = false;
   bool shieldActive = false;
   bool eagleActive = false;
+  bool magnetActive = false;
+  bool arrowsActive = false;
+  bool magnetSaved;
+  bool heartSaved;
+  bool shieldSaved;
+  bool arrowsSaved;
+  bool swordsSaved;
+  bool armorSaved;
+  bool vineSaved;
+  bool eagleSaved;
+  double m;
+  double c;
 //  int next_heart;
 
-  LangawGame(this.storage, this.gemsstorage) {
+  LangawGame(this.storage, this.gemsstorage, this.magnetTrue, this.gemsTrue, this.heartTrue, this.shieldTrue, this.arrowsTrue, this.swordsTrue, this.armorTrue, this.vineTrue, this.eagleTrue) {
     initialize();
   }
 
@@ -120,7 +142,134 @@ class LangawGame extends Game {
     shop = Shop(this);
     back = Back(this);
     loadShop();
+    if(magnetTrue.getBool('magnet') == null){
+      magnetTrue.setBool('magnet', false);
+    }
+    if(magnetTrue.getBool('magnet') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'magnet') {
+          shoppingview.bought = true;
+          powers.add('magnet-blast.png');
+          magnet_bought = true;
+          magnet = Magnet(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
+    if(shieldTrue.getBool('shield') == null){
+      shieldTrue.setBool('shield', false);
+    }
+    if(shieldTrue.getBool('shield') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'shield') {
+          shoppingview.bought = true;
+          powers.add('slashed-shield.png');
+          shield_bought = true;
+          shield = Shield(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
+    if(heartTrue.getBool('heart') == null){
+      heartTrue.setBool('heart', false);
+    }
+    if(heartTrue.getBool('heart') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'heart') {
+          shoppingview.bought = true;
+          heart_pixel_add = true;
+          fly.extra_live = true;
+          heart_bought = true;
+          heart = Heart(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
+    if(swordsTrue.getBool('swords') == null){
+      swordsTrue.setBool('swords', false);
+    }
+    if(swordsTrue.getBool('swords') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'swords') {
+          shoppingview.bought = true;
+          powers.add('all-for-one.png');
+          swords_bought = true;
+          swords = Swords(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
+    if(gemsTrue.getBool('rupee') == null){
+      gemsTrue.setBool('rupee', false);
+    }
+    if(gemsTrue.getBool('rupee') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'rupee') {
+          shoppingview.bought = true;
+          increasegems = 2;
+          rupee_bought = true;
+          rupee = Rupee(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
+    if(arrowsTrue.getBool('arrows') == null){
+      arrowsTrue.setBool('arrows', false);
+    }
+    if(arrowsTrue.getBool('arrows') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'arrows') {
+          shoppingview.bought = true;
+          powers.add('charged-arrow.png');
+          arrows_bought = true;
+          arrows = Arrows(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
+    if(armorTrue.getBool('armor') == null){
+      armorTrue.setBool('armor', false);
+    }
+    if(armorTrue.getBool('armor') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'armor') {
+          shoppingview.bought = true;
+          powers.add('chest-armor.png');
+          armor_bought = true;
+          armor = Armor(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
+    if(eagleTrue.getBool('eagle') == null){
+      eagleTrue.setBool('eagle', false);
+    }
+    if(eagleTrue.getBool('eagle') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'eagle') {
+          shoppingview.bought = true;
+          powers.add('eagle-emblem.png');
+          eagle_bought = true;
+          eagle = Eagle(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
+    if(vineTrue.getBool('beanstalk') == null){
+      vineTrue.setBool('beanstalk', false);
+    }
+    if(vineTrue.getBool('beanstalk') == true){
+      shoppingView.forEach((ShoppingView shoppingview){
+        if (shoppingview.power == 'beanstalk') {
+          shoppingview.bought = true;
+          beanstalk_bought = true;
+          beanstalk = Beanstalk(this, shoppingview.x, shoppingview.y);
+        }
+      });
+      shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
+    }
   }
+
 
   void loadShop() {
     shoppingView.add(ShoppingView(this, 0, 0.5, 200, 1.9, 3.9, '200', 'shield'));
@@ -154,13 +303,28 @@ class LangawGame extends Game {
   }
 
   void spawnRain() {
-    if (activeView == View.playing) if (amountRain > rains.length) {
-      rains.add(Rain(this));
-      power_up.forEach((Powers power) {
-        if(power.active){
-          power.raincount += 1;
-        }
-      });
+    if(arrowsActive == false) {
+      if (activeView == View.playing) if (amountRain > rains.length) {
+        rains.add(Rain(this));
+        power_up.forEach((Powers power) {
+          if (power.active) {
+            power.raincount += 1;
+          }
+        });
+      }
+    }else{
+      temAmountRain = 5;
+      if (activeView == View.playing) if (temAmountRain < rains.length) {
+        rains.removeLast();
+      }
+      if(temAmountRain > rains.length){
+        rains.add(Rain(this));
+        power_up.forEach((Powers power) {
+          if (power.active) {
+            power.raincount += 1;
+          }
+        });
+      }
     }
     if (activeView == View.home || activeView == View.lost)
       if (homeamountRain > homerains.length) {
@@ -169,6 +333,24 @@ class LangawGame extends Game {
   }
 
   void render(Canvas canvas) {
+    print("Magnet :");
+    print(magnetTrue.getBool('magnet'));
+    print("Shield :");
+    print(shieldTrue.getBool('shield'));
+    print("Heart :");
+    print(heartTrue.getBool('heart'));
+    print("Swords :");
+    print(swordsTrue.getBool('swords'));
+    print("Rupee :");
+    print(gemsTrue.getBool('rupee'));
+    print("Arrows :");
+    print(arrowsTrue.getBool('arrows'));
+    print("Armor :");
+    print(armorTrue.getBool('armor'));
+    print("Eagle :");
+    print(eagleTrue.getBool('eagle'));
+    print("Vine :");
+    print(vineTrue.getBool('beanstalk'));
     Rect bgRect = Rect.fromLTWH(0, 0, screenSize.width, screenSize.height); // L and T are coordinates
     Paint bgPaint = Paint();
     bgPaint.color = Color(0xff1e1e1e); // Fuel Town from FlatUIColors.com be careful as some color can be harmful
@@ -217,6 +399,30 @@ class LangawGame extends Game {
     if (activeView == View.playing) rains.forEach((Rain rain) => rain.update(t));
     if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.update(t));
     if (activeView == View.playing) rains.forEach((Rain rain) {
+      if(magnetActive){
+        if (rain.rainColor == rain.colorGreen && rain.y > fly.y - (tileSize) - raintileSize && fly.x + (tileSize * 2) > rain.x && fly.x - (tileSize * 2) < rain.x + raintileSize){
+          /*
+          rain.xCenter = rain.x + (raintileSize / 2);
+          rain.yCenter = rain.y + (raintileSize / 2);
+          fly.xCenter = fly.x + (tileSize / 2);
+          fly.yCenter = fly.y + (tileSize / 2);
+          m = (fly.yCenter - rain.yCenter)/(fly.xCenter - rain.xCenter);
+          c = ((rain.xCenter * fly.yCenter) - (rain.yCenter * fly.xCenter)) / (rain.xCenter - fly.xCenter);
+          fly.x = (fly.y - c)/m;
+          **/
+          amountRain += 1;
+          score += 1;
+          if (score > (storage.getInt('highscore') ?? 0)) {
+            storage.setInt('highscore', score);
+            highscoreDisplay.updateHighscore();
+          }
+          counter = (gemsstorage.getInt('gems') ?? 0) + increasegems;
+          gemsstorage.setInt('gems', counter);
+          gemsdisplay.updateGems();
+
+          rain.onScreen = false;
+        }
+      }
       if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
         if(firstFree){
           powerx = 0;
@@ -326,7 +532,7 @@ class LangawGame extends Game {
     if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview){
       counter = (gemsstorage.getInt('gems'));
 
-      if (shoppingview.rect.contains(d.globalPosition) && buy == true && shoppingview.price <= counter ){
+      if ((shoppingview.rect.contains(d.globalPosition) && buy == true && shoppingview.price <= counter) ){
         counter = (gemsstorage.getInt('gems') ?? 0) - shoppingview.price;
         gemsstorage.setInt('gems', counter);
         gemsdisplay.updateGems();
@@ -335,46 +541,55 @@ class LangawGame extends Game {
           powers.add('magnet-blast.png');
           magnet_bought = true;
           magnet = Magnet(this, shoppingview.x, shoppingview.y);
+          magnetTrue.setBool('magnet', true);
         }
         if (shoppingview.power == 'shield'){
           powers.add('slashed-shield.png');
           shield_bought = true;
           shield = Shield(this, shoppingview.x, shoppingview.y);
+          shieldTrue.setBool('shield', true);
         }
         if (shoppingview.power == 'heart'){
           heart_pixel_add = true;
           fly.extra_live = true;
           heart_bought = true;
           heart = Heart(this, shoppingview.x, shoppingview.y);
+          heartTrue.setBool('heart', true);
         }
         if (shoppingview.power == 'swords'){
           powers.add('all-for-one.png');
           swords_bought = true;
           swords = Swords(this, shoppingview.x, shoppingview.y);
+          swordsTrue.setBool('swords', true);
         }
         if (shoppingview.power == 'rupee'){
           increasegems = 2;
           rupee_bought = true;
           rupee = Rupee(this, shoppingview.x, shoppingview.y);
+          gemsTrue.setBool('rupee', true);
         }
         if (shoppingview.power == 'arrows'){
           powers.add('charged-arrow.png');
           arrows_bought = true;
           arrows = Arrows(this, shoppingview.x, shoppingview.y);
+          arrowsTrue.setBool('arrows', true);
         }
         if (shoppingview.power == 'armor'){
           powers.add('chest-armor.png');
           armor_bought = true;
           armor = Armor(this, shoppingview.x, shoppingview.y);
+          armorTrue.setBool('armor', true);
         }
         if (shoppingview.power == 'eagle'){
           powers.add('eagle-emblem.png');
           eagle_bought = true;
           eagle = Eagle(this, shoppingview.x, shoppingview.y);
+          eagleTrue.setBool('eagle', true);
         }
         if (shoppingview.power == 'beanstalk'){
           beanstalk_bought = true;
           beanstalk = Beanstalk(this, shoppingview.x, shoppingview.y);
+          vineTrue.setBool('beanstalk', true);
         }
         shoppingView.removeWhere((ShoppingView shoppingview) => (shoppingview.bought == true));
       }

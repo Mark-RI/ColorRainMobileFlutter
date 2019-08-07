@@ -19,6 +19,8 @@ class Fly{
   int pixel_pos = 0;
   Sprite ball;
   int pos;
+  double xCenter;
+  double yCenter;
 
   Fly(this.game, this.x, this.y) {
     ball = Sprite('circle.png');
@@ -70,6 +72,11 @@ class Fly{
         isUp = false;
         isLeft = false;
         game.smallActive = false;
+        game.swordActive = false;
+        game.shieldActive = false;
+        game.eagleActive = false;
+        game.magnetActive = false;
+        game.arrowsActive = false;
         isRight = false;
         game.heart_add = true;
         game.firstFree = true;
