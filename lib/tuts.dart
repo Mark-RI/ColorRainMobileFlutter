@@ -4,12 +4,12 @@ import 'package:flame/sprite.dart';
 import 'package:langaw/langaw-game.dart';
 import 'package:langaw/view.dart';
 
-class Shop {
+class Tuts {
   final LangawGame game;
   Rect rect;
   Sprite sprite;
 
-  Shop(this.game) {
+  Tuts(this.game) {
     rect = Rect.fromLTWH(
       (game.screenSize.width - game.tileSize) / 2,
       (game.screenSize.height * .75) - (game.tileSize * 1.75),
@@ -24,7 +24,6 @@ class Shop {
   }
 
   void onTapDown() {
-    game.activeView = View.shopping;
-//    sleep(const Duration(milliseconds:50));
+    game.activeView = View.tuts;
   }
 }

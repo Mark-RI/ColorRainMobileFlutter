@@ -4,26 +4,27 @@ import 'package:flame/sprite.dart';
 import 'package:langaw/langaw-game.dart';
 import 'package:langaw/view.dart';
 
-class Back {
+class Images {
   final LangawGame game;
   Rect rect;
   Sprite sprite;
+  String image;
+  double sizex;
+  double sizey;
+  double x;
+  double y;
 
-  Back(this.game) {
+  Images(this.game, this.image, this.x, this.y, this.sizex, this.sizey) {
     rect = Rect.fromLTWH(
-      game.tileSize * 0.52346,
-      game.tileSize * .25,
-      game.tileSize * 0.9 * 0.8,
-      game.tileSize * 0.9 * 0.8,
+      game.tileSize * x,
+      game.tileSize * y,
+      game.tileSize * this.sizex,
+      game.tileSize * this.sizey,
     );
-    sprite = Sprite('back.png');
+    sprite = Sprite(image);
   }
 
   void render(Canvas c) {
     sprite.renderRect(c, rect);
-  }
-
-  void onTapDown() {
-    game.activeView = View.home;
   }
 }

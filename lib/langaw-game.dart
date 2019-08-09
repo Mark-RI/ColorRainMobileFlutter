@@ -32,6 +32,9 @@ import 'package:langaw/homebutton.dart';
 import 'package:langaw/back_button.dart';
 import 'package:langaw/heart-pixel.dart';
 import 'package:langaw/render_power.dart';
+import 'package:langaw/tuts.dart';
+import 'package:langaw/image.dart';
+import 'package:langaw/credits.dart';
 
 class LangawGame extends Game {
   Back back;
@@ -47,11 +50,19 @@ class LangawGame extends Game {
   Heart heart;
   HighscoreDisplay highscoreDisplay;
   GemsDisplay gemsdisplay;
-//  List<HeartPixel> heart_pixel;
   List<Powers> power_up;
   List<ShoppingView> shoppingView;
   ShopDisplay shopDisplay;
+  ShopDisplay tutsDisplay;
+  ShopDisplay gemDisplay;
+  ShopDisplay whiteDisplay;
+  ShopDisplay powerDisplay;
+  ShopDisplay warningDisplay;
+  ShopDisplay creditsDisplay;
   Shop shop;
+  Images gemGrab;
+  Tuts tuts;
+  Credits credits;
   final SharedPreferences storage;
   final SharedPreferences gemsstorage;
   final SharedPreferences gemsTrue;
@@ -81,6 +92,7 @@ class LangawGame extends Game {
   int score;
   ScoreDisplay scoreDisplay;
   bool buy;
+  bool goOn;
   int counter;
   bool magnet_bought = false;
   bool shield_bought = false;
@@ -105,17 +117,6 @@ class LangawGame extends Game {
   bool eagleActive = false;
   bool magnetActive = false;
   bool arrowsActive = false;
-  bool magnetSaved;
-  bool heartSaved;
-  bool shieldSaved;
-  bool arrowsSaved;
-  bool swordsSaved;
-  bool armorSaved;
-  bool vineSaved;
-  bool eagleSaved;
-  double m;
-  double c;
-//  int next_heart;
 
   LangawGame(this.storage, this.gemsstorage, this.magnetTrue, this.gemsTrue, this.heartTrue, this.shieldTrue, this.arrowsTrue, this.swordsTrue, this.armorTrue, this.vineTrue, this.eagleTrue) {
     initialize();
@@ -126,7 +127,6 @@ class LangawGame extends Game {
     power_up = List<Powers>();
     homerains = List<Rain>();
     rains = List<Rain>();
-//    heart_pixel = List<HeartPixel>();
     resize(await Flame.util.initialDimensions());
     score = 0;
     scoreDisplay = ScoreDisplay(this);
@@ -138,8 +138,17 @@ class LangawGame extends Game {
     gemsdisplay = GemsDisplay(this);
     startButton = StartButton(this);
     homeButton = HomeButton(this);
-    shopDisplay = ShopDisplay(this);
+    tutsDisplay = ShopDisplay(this, 30);
+    gemDisplay = ShopDisplay(this, 24);
+    whiteDisplay = ShopDisplay(this, 24);
+    shopDisplay = ShopDisplay(this, 30);
+    powerDisplay = ShopDisplay(this, 24);
+    warningDisplay = ShopDisplay(this, 24);
+    creditsDisplay = ShopDisplay(this, 30);
+    gemGrab = Images(this, 'gem.png', 1.7, 5.25, 6, 10.66662);
+    credits = Credits(this);
     shop = Shop(this);
+    tuts = Tuts(this);
     back = Back(this);
     loadShop();
     if(magnetTrue.getBool('magnet') == null){
@@ -283,20 +292,6 @@ class LangawGame extends Game {
     shoppingView.add(ShoppingView(this, 5, 7.5, 200, 6.9, 12.75, '200', 'eagle'));
   }
 
-//  void loadHeartPixel() {
-//    next_heart = 1;
-//    heart_pixel.add(HeartPixel(this, 3.6, 1, 2));
-//    heart_pixel.add(HeartPixel(this, 4.4, 1, 3));
-//    heart_pixel.add(HeartPixel(this, 5.2, 1, 4));
-//    heart_add = false;
-//  }
-
-//  void loadExtraHeart() {
-//   next_heart = 0;
-//    heart_pixel.add(HeartPixel(this, 2.8, 1, 1));
-//    heart_pixel_add = false;
-//  }
-
   void spawnFly() {
     fly = Fly(this, (screenSize.width - tileSize) / 2,
         screenSize.height - (btileSize * 2) - (tileSize / 8));
@@ -333,24 +328,6 @@ class LangawGame extends Game {
   }
 
   void render(Canvas canvas) {
-    print("Magnet :");
-    print(magnetTrue.getBool('magnet'));
-    print("Shield :");
-    print(shieldTrue.getBool('shield'));
-    print("Heart :");
-    print(heartTrue.getBool('heart'));
-    print("Swords :");
-    print(swordsTrue.getBool('swords'));
-    print("Rupee :");
-    print(gemsTrue.getBool('rupee'));
-    print("Arrows :");
-    print(arrowsTrue.getBool('arrows'));
-    print("Armor :");
-    print(armorTrue.getBool('armor'));
-    print("Eagle :");
-    print(eagleTrue.getBool('eagle'));
-    print("Vine :");
-    print(vineTrue.getBool('beanstalk'));
     Rect bgRect = Rect.fromLTWH(0, 0, screenSize.width, screenSize.height); // L and T are coordinates
     Paint bgPaint = Paint();
     bgPaint.color = Color(0xff1e1e1e); // Fuel Town from FlatUIColors.com be careful as some color can be harmful
@@ -360,9 +337,6 @@ class LangawGame extends Game {
     lowerPaint.color = Color(0xff151515);
     if (activeView == View.playing) canvas.drawRect(lowerRect, lowerPaint);
     spawnRain();
-//    if (heart_add == true && activeView == View.playing) loadHeartPixel();
-//    if (heart_pixel_add == true && activeView == View.playing) loadExtraHeart();
-//    print(next_heart);
     if (activeView == View.playing) rains.forEach((Rain rain) => rain.render(canvas));
     if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.render(canvas));
     if (activeView == View.playing) fly.render(canvas);
@@ -379,7 +353,18 @@ class LangawGame extends Game {
       homeButton.render(canvas);
     }
     if (activeView == View.home) shop.render(canvas);
+    if (activeView == View.home) credits.render(canvas);
+    if (activeView == View.home) tuts.render(canvas);
     if (activeView == View.shopping) shopDisplay.render(canvas);
+    if (activeView == View.tuts) {
+      tutsDisplay.render(canvas);
+      gemDisplay.render(canvas);
+      whiteDisplay.render(canvas);
+      powerDisplay.render(canvas);
+      warningDisplay.render(canvas);
+      gemGrab.render(canvas);
+    }
+    if (activeView == View.credits) creditsDisplay.render(canvas);
     if (activeView == View.shopping && magnet_bought == true) magnet.render(canvas);
     if (activeView == View.shopping && shield_bought == true) shield.render(canvas);
     if (activeView == View.shopping && heart_bought == true) heart.render(canvas);
@@ -389,27 +374,56 @@ class LangawGame extends Game {
     if (activeView == View.shopping && armor_bought == true) armor.render(canvas);
     if (activeView == View.shopping && eagle_bought == true) eagle.render(canvas);
     if (activeView == View.shopping && beanstalk_bought == true) beanstalk.render(canvas);
-    if (activeView == View.shopping) back.render(canvas);
+    if (activeView == View.shopping || activeView == View.tuts || activeView == View.credits) back.render(canvas);
     if (activeView == View.playing) power_up.forEach((Powers powers) => powers.render(canvas));
-//    if (activeView == View.playing) heart_pixel.forEach((HeartPixel heartPixel) => heartPixel.render(canvas));
     }
 
   void update(double t) {
     if (activeView == View.playing) fly.update(t);
-    if (activeView == View.playing) rains.forEach((Rain rain) => rain.update(t));
-    if (activeView == View.home || activeView == View.lost) homerains.forEach((Rain rain) => rain.update(t));
-    if (activeView == View.playing) rains.forEach((Rain rain) {
-      if(magnetActive){
-        if (rain.rainColor == rain.colorGreen && rain.y > fly.y - (tileSize) - raintileSize && fly.x + (tileSize * 2) > rain.x && fly.x - (tileSize * 2) < rain.x + raintileSize){
-          /*
-          rain.xCenter = rain.x + (raintileSize / 2);
-          rain.yCenter = rain.y + (raintileSize / 2);
-          fly.xCenter = fly.x + (tileSize / 2);
-          fly.yCenter = fly.y + (tileSize / 2);
-          m = (fly.yCenter - rain.yCenter)/(fly.xCenter - rain.xCenter);
-          c = ((rain.xCenter * fly.yCenter) - (rain.yCenter * fly.xCenter)) / (rain.xCenter - fly.xCenter);
-          fly.x = (fly.y - c)/m;
-          **/
+    if (activeView == View.playing) {
+      rains.forEach((Rain rain) => rain.update(t));
+      rains.forEach((Rain rain) => rain.remove());
+    }
+    if (activeView == View.home || activeView == View.lost) {
+      homerains.forEach((Rain rain) => rain.update(t));
+      homerains.forEach((Rain rain) => rain.removeHome());
+    }
+      if (activeView == View.playing) rains.forEach((Rain rain) {
+        if(magnetActive){
+          if (rain.rainColor == rain.colorGreen && rain.y > fly.y - (tileSize) - raintileSize && fly.x + (tileSize * 2) > rain.x && fly.x - (tileSize * 2) < rain.x + raintileSize){
+            amountRain += 1;
+            score += 1;
+            if (score > (storage.getInt('highscore') ?? 0)) {
+              storage.setInt('highscore', score);
+              highscoreDisplay.updateHighscore();
+            }
+            counter = (gemsstorage.getInt('gems') ?? 0) + increasegems;
+            gemsstorage.setInt('gems', counter);
+            gemsdisplay.updateGems();
+
+            rain.onScreen = false;
+          }
+        }
+        if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
+          if(firstFree){
+            powerx = 0;
+            power = randomChoice(powers);
+            power_up.add(Powers(this, powerx, 10, power, 1));
+            firstFree = false;
+          }else if(secondFree){
+            powerx = 2.5;
+            power = randomChoice(powers);
+            power_up.add(Powers(this, powerx, 10, power, 2));
+            secondFree = false;
+          }else if(thirdFree){
+            powerx = 5;
+            power = randomChoice(powers);
+            power_up.add(Powers(this, powerx, 10, power, 3));
+            thirdFree = false;
+          }
+
+        }
+        if (rain.rainColor == rain.colorGreen && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
           amountRain += 1;
           score += 1;
           if (score > (storage.getInt('highscore') ?? 0)) {
@@ -419,61 +433,29 @@ class LangawGame extends Game {
           counter = (gemsstorage.getInt('gems') ?? 0) + increasegems;
           gemsstorage.setInt('gems', counter);
           gemsdisplay.updateGems();
-
-          rain.onScreen = false;
         }
+        if (rain.rainColor == rain.colorRed || rain.rainColor == rain.colorBlue || rain.rainColor == rain.colorYellow) {
+          if (rain.y > fly.y + tileSize - raintileSize &&
+              rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
+            fly.isUp = true;
+          }
+        }
+      });
+      if (activeView == View.playing) scoreDisplay.update(t);
+      if (activeView == View.home) homeView.update(t);
+      if (activeView == View.lost) lostView.update(t);
+      if (activeView == View.shopping) shopDisplay.update('SHOP', 2, 0.25);
+      if (activeView == View.tuts) {
+        tutsDisplay.update('HOW TO PLAY', 1.7, 0.25);
+        gemDisplay.update('Green increases gems and score.', 1, 1.5);
+        whiteDisplay.update('Obtain powers with white.', 1.85, 2.5);
+        powerDisplay.update('Unlock power at the store.', 1.8, 3.5);
+        warningDisplay.update('Avoid all other colors.', 1.7, 4.5);
       }
-      if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
-        if(firstFree){
-          powerx = 0;
-          power = randomChoice(powers);
-          power_up.add(Powers(this, powerx, 10, power, 1));
-          firstFree = false;
-        }else if(secondFree){
-          powerx = 2.5;
-          power = randomChoice(powers);
-          power_up.add(Powers(this, powerx, 10, power, 2));
-          secondFree = false;
-        }else if(thirdFree){
-          powerx = 5;
-          power = randomChoice(powers);
-          power_up.add(Powers(this, powerx, 10, power, 3));
-          thirdFree = false;
-        }
-
-      }
-      if (rain.rainColor == rain.colorGreen && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
-        amountRain += 1;
-        score += 1;
-        if (score > (storage.getInt('highscore') ?? 0)) {
-          storage.setInt('highscore', score);
-          highscoreDisplay.updateHighscore();
-        }
-        counter = (gemsstorage.getInt('gems') ?? 0) + increasegems;
-        gemsstorage.setInt('gems', counter);
-        gemsdisplay.updateGems();
-      }
-      if (rain.rainColor == rain.colorRed || rain.rainColor == rain.colorBlue || rain.rainColor == rain.colorYellow) {
-        if (rain.y > fly.y + tileSize - raintileSize &&
-            rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
-          fly.isUp = true;
-//          next_heart += 1;
-//          heart_pixel.forEach((HeartPixel heartPixel) {
-//           if(heartPixel.pos == next_heart){
-//              heartPixel.live_lost = true;
-            }
-//          });
-        }
-//      }
-    });
-    if (activeView == View.playing) scoreDisplay.update(t);
-    if (activeView == View.home) homeView.update(t);
-    if (activeView == View.lost) lostView.update(t);
-    if (activeView == View.shopping) shopDisplay.update(t);
-    if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.update());
-//    if (activeView == View.playing) heart_pixel.forEach((HeartPixel heartPixel) => heartPixel.update());
-    if (activeView == View.playing) power_up.forEach((Powers power) => power.eliminate());
-  }
+      if (activeView == View.credits) creditsDisplay.update('CREDITS', 1.9, 0.25);
+      if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.update());
+      if (activeView == View.playing) power_up.forEach((Powers power) => power.eliminate());
+    }
 
   void resize(Size size) {
     screenSize = size;
@@ -484,6 +466,7 @@ class LangawGame extends Game {
 
   void onTapDown(TapDownDetails d) {
     buy = true;
+    goOn = true;
     if (activeView == View.lost) {
       if (startButton.rect.contains(d.globalPosition)) {
         lostView.onTapDown();
@@ -494,17 +477,42 @@ class LangawGame extends Game {
     }
 
     if (activeView == View.home) {
-      if (shop.rect.contains(d.globalPosition)){
-        shop.onTapDown();
-        buy = false;
+      if (tuts.rect.contains(d.globalPosition)){
+        if(goOn) {
+          tuts.onTapDown();
+        }
       }
-
+      if (shop.rect.contains(d.globalPosition)){
+        if(goOn){
+          shop.onTapDown();
+          buy = false;
+        }
+      }
+      if (credits.rect.contains(d.globalPosition)){
+        if(goOn) {
+          credits.onTapDown();
+        }
+      }
       if (startButton.rect.contains(d.globalPosition)) {
-        homeView.onTapDown();
+        if(goOn) {
+          homeView.onTapDown();
+        }
       }
     }
 
     if(activeView == View.shopping) {
+      if (back.rect.contains(d.globalPosition)) {
+        back.onTapDown();
+      }
+    }
+
+    if(activeView == View.tuts) {
+      if (back.rect.contains(d.globalPosition)) {
+        back.onTapDown();
+      }
+    }
+
+    if(activeView == View.credits) {
       if (back.rect.contains(d.globalPosition)) {
         back.onTapDown();
       }

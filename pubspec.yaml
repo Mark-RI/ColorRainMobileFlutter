@@ -1,5 +1,5 @@
-name: langaw
-description: A new Flutter project.
+name: Color Rain
+description: Collect green blocks to increase gems and score. Use gems to buy power ups at the store which you can use buy obtaining the white blocks. However contact with any other colors will bring you closer to your doom.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -26,10 +26,16 @@ dependencies:
   flame: ^0.14.2
   shared_preferences: ^0.5.1+2
   dart_random_choice: ^0.0.2
+  flutter_launcher_icons: "^0.7.2"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon5.png"
 
 
 # For information on the generic Dart part of this file, see the
@@ -58,6 +64,13 @@ flutter:
      - assets/images/heart-pixel.png
      - assets/images/heart-lost.png
      - assets/images/tuts.png
+     - assets/images/gem.png
+     - assets/images/credits.png
+     - assets/images/icon.png
+     - assets/images/icon2.png
+     - assets/images/icon3.png
+     - assets/images/icon5.png
+     - assets/images/icon7.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

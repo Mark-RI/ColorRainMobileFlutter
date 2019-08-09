@@ -40,11 +40,16 @@ class LostView {
     }
   }
   void onTapDown() {
-    game.score = 0;
-    game.activeView = View.playing;
+    if(game.goOn){
+      game.score = 0;
+      game.activeView = View.playing;
+    }
   }
   void onTapDownHome() {
-    game.score = 0;
-    game.activeView = View.home;
+    if (game.goOn) {
+      game.goOn = false;
+      game.score = 0;
+      game.activeView = View.home;
+    }
   }
 }

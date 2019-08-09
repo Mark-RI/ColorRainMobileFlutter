@@ -78,6 +78,7 @@ class Fly{
         game.magnetActive = false;
         game.arrowsActive = false;
         isRight = false;
+        game.goOn = false;
         game.heart_add = true;
         game.firstFree = true;
         game.secondFree = true;

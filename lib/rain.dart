@@ -143,7 +143,6 @@ class Rain {
     if (game.activeView == View.playing)
       if (y >= game.fly.y + game.tileSize - game.raintileSize - yIncrease) {
         onScreen = false;
-        game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
       }
     if (game.activeView == View.playing || game.activeView == View.home || game.activeView == View.lost)
       if (onScreen) {
@@ -153,19 +152,14 @@ class Rain {
     if (game.activeView == View.home || game.activeView == View.lost) {
       if (y >= game.screenSize.height) {
         onScreen = false;
-        game.homerains.removeWhere((Rain rain) => (rain.onScreen == false));
       }
     }
-    if(onScreen == false){
-      game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
-    }
-//    if (game.firstFree == false && game.secondFree == false && game.thirdFree == false) {
-//      game.rains.forEach((Rain rain) {
-//        if(rain.rainColor == colorWhite) {
-//        onScreen = false;
-//        game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
-//        }
-//      });
-//    }
+  }
+  void removeHome(){
+    game.homerains.removeWhere((Rain rain) => (rain.onScreen == false));
+  }
+
+  void remove(){
+    game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
   }
 }

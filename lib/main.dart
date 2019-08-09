@@ -42,7 +42,9 @@ void main() async {
     'home.png',
     'heart-pixel.png',
     'heart-lost.png',
-    'tuts.png'
+    'tuts.png',
+    'gem.png',
+    'credits.png',
   ]);
 
   Util flameUtil = Util();

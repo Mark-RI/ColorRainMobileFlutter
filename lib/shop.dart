@@ -11,7 +11,7 @@ class Shop {
 
   Shop(this.game) {
     rect = Rect.fromLTWH(
-      (game.screenSize.width - game.tileSize) / 2,
+      ((game.screenSize.width) / 2) + (game.raintileSize * 1.5),
       (game.screenSize.height * .75) - (game.tileSize * 1.75),
       game.tileSize,
       game.tileSize,

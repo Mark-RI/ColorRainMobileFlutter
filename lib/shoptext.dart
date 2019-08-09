@@ -10,11 +10,12 @@ class ShopDisplay {
   TextPainter painter;
   TextStyle textStyle;
   Offset position;
+  double font;
 
-  ShopDisplay(this.game) {
+  ShopDisplay(this.game, this.font) {
     painter = TextPainter(textAlign: TextAlign.start, textDirection: TextDirection.ltr);
 
-    textStyle = TextStyle(color: Color(0xffffffff), fontSize: 30);
+    textStyle = TextStyle(color: Color(0xffffffff), fontSize: font);
 
     position = Offset.zero;
 
@@ -25,17 +26,17 @@ class ShopDisplay {
   }
 
 
-  void update(double t) {
+  void update(String text, double x, double y) {
     painter.text = TextSpan(
-      text: ("SHOP"),
+      text: (text),
       style: textStyle,
     );
 
     painter.layout();
 
-    position = Offset(
-      (game.screenSize.width / 2) - (painter.width / 2),
-      (game.tileSize * .25),
-    );
-  }
+position = Offset(
+(game.screenSize.width / x) - (painter.width / x),
+(game.tileSize * y),
+);
+}
 }
