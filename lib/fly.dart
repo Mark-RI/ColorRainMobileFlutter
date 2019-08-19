@@ -9,7 +9,6 @@ import 'package:langaw/render_power.dart';
 class Fly{
   final LangawGame game;
   Rect flyRect;
-//  Paint flyPaint;
   bool isLeft = false;
   bool extra_live = false;
   bool isRight = false;
@@ -21,19 +20,22 @@ class Fly{
   int pos;
   double xCenter;
   double yCenter;
+  double width;
 
   Fly(this.game, this.x, this.y) {
+    width = game.tileSize;
     ball = Sprite('circle.png');
     flyRect = Rect.fromLTWH(x, y, game.tileSize, game.tileSize);
-//    flyPaint = Paint();
-//    flyPaint.color = Color(0xff6ab04c);
+
   }
 
   void render(Canvas c) {
     if(game.smallActive == false){
+      width = game.tileSize;
       ball.renderRect(c, flyRect);
     }else{
       ball.renderRect(c, flyRect.deflate(10));
+      width = flyRect.deflate(10).width;
     }
   }
 

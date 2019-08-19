@@ -57,5 +57,6 @@ void main() async {
   TapGestureRecognizer tapper = TapGestureRecognizer();
   tapper.onTapDown = game.onTapDown;
   tapper.onTapUp = game.onTapUp;
+  tapper.onTapCancel = game.onTapCancel;
   flameUtil.addGestureRecognizer(tapper);
 }

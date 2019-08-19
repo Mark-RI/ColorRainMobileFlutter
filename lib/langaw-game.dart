@@ -382,11 +382,11 @@ class LangawGame extends Game {
     if (activeView == View.playing) fly.update(t);
     if (activeView == View.playing) {
       rains.forEach((Rain rain) => rain.update(t));
-      rains.forEach((Rain rain) => rain.remove());
+      rains.removeWhere((Rain rain) => (rain.onScreen == false));
     }
     if (activeView == View.home || activeView == View.lost) {
       homerains.forEach((Rain rain) => rain.update(t));
-      homerains.forEach((Rain rain) => rain.removeHome());
+      homerains.removeWhere((Rain rain) => (rain.onScreen == false));
     }
       if (activeView == View.playing) rains.forEach((Rain rain) {
         if(magnetActive){
@@ -404,7 +404,7 @@ class LangawGame extends Game {
             rain.onScreen = false;
           }
         }
-        if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
+        if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && fly.width + fly.x > rain.x) {
           if(firstFree){
             powerx = 0;
             power = randomChoice(powers);
@@ -423,7 +423,7 @@ class LangawGame extends Game {
           }
 
         }
-        if (rain.rainColor == rain.colorGreen && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
+        if (rain.rainColor == rain.colorGreen && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && fly.width + fly.x > rain.x) {
           amountRain += 1;
           score += 1;
           if (score > (storage.getInt('highscore') ?? 0)) {
@@ -436,7 +436,7 @@ class LangawGame extends Game {
         }
         if (rain.rainColor == rain.colorRed || rain.rainColor == rain.colorBlue || rain.rainColor == rain.colorYellow) {
           if (rain.y > fly.y + tileSize - raintileSize &&
-              rain.x + raintileSize > fly.x && tileSize + fly.x > rain.x) {
+              rain.x + raintileSize > fly.x && fly.width + fly.x > rain.x) {
             fly.isUp = true;
           }
         }
@@ -455,6 +455,7 @@ class LangawGame extends Game {
       if (activeView == View.credits) creditsDisplay.update('CREDITS', 1.9, 0.25);
       if (activeView == View.shopping) shoppingView.forEach((ShoppingView shoppingview) => shoppingview.update());
       if (activeView == View.playing) power_up.forEach((Powers power) => power.eliminate());
+      if (activeView == View.playing) power_up.removeWhere((Powers power) => (power.remove == true));
     }
 
   void resize(Size size) {
@@ -610,5 +611,10 @@ class LangawGame extends Game {
         }
       });
     }
+  }
+
+  onTapCancel(){
+    fly.isLeft = false;
+    fly.isRight = false;
   }
 }

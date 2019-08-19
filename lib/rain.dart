@@ -155,11 +155,4 @@ class Rain {
       }
     }
   }
-  void removeHome(){
-    game.homerains.removeWhere((Rain rain) => (rain.onScreen == false));
-  }
-
-  void remove(){
-    game.rains.removeWhere((Rain rain) => (rain.onScreen == false));
-  }
 }

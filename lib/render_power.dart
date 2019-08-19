@@ -18,6 +18,7 @@ class Powers {
   int raincount = 0;
   int pos;
   int rainlimit = 0;
+  bool remove = false;
 
   Powers(this.game, this.x, this.y, this.power, this.pos) {
     rect = Rect.fromLTWH(
@@ -73,7 +74,9 @@ class Powers {
       if(raincount == rainlimit){
         if(pos == 1){
           game.firstFree = true;
-          game.power_up.removeWhere((Powers power) => (power.raincount == rainlimit));
+          if(raincount == rainlimit){
+            remove = true;
+          }
           game.smallActive = false;
           game.swordActive = false;
           game.shieldActive = false;
@@ -83,7 +86,9 @@ class Powers {
         }
         if(pos == 2){
           game.secondFree = true;
-          game.power_up.removeWhere((Powers power) => (power.raincount == rainlimit));
+          if(raincount == rainlimit){
+            remove = true;
+          }
           game.smallActive = false;
           game.swordActive = false;
           game.shieldActive = false;
@@ -93,7 +98,9 @@ class Powers {
         }
         if(pos == 3){
           game.thirdFree = true;
-          game.power_up.removeWhere((Powers power) => (power.raincount == rainlimit));
+          if(raincount == rainlimit){
+            remove = true;
+          }
           game.smallActive = false;
           game.swordActive = false;
           game.shieldActive = false;
