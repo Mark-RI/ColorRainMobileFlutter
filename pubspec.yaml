@@ -1,4 +1,4 @@
-name: Color Rain
+name: langaw
 description: Collect green blocks to increase gems and score. Use gems to buy power ups at the store which you can use buy obtaining the white blocks. However contact with any other colors will bring you closer to your doom.
 
 # The following defines the version and build number for your application.
@@ -27,6 +27,7 @@ dependencies:
   shared_preferences: ^0.5.1+2
   dart_random_choice: ^0.0.2
   flutter_launcher_icons: "^0.7.2"
+  flare_flutter: ^1.5.0
 
 dev_dependencies:
   flutter_test:
