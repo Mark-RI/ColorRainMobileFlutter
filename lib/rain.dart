@@ -112,6 +112,7 @@ class Rain {
         rainPaint.color = Color(rainColor);
       }
       if (game.amountRain > 10) {
+        game.tutorialDone.setBool('tut', true);
         game.greentext = false;
         rainColor = colors2[rnd.nextInt(colors2.length)];
         rainPaint.color = Color(rainColor);

@@ -171,8 +171,7 @@ class LangawGame extends Game {
     tuts = Tuts(this);
     back = Back(this);
     loadShop();
-    tut = false;
-/*    if (tutorialDone.getBool('tut') == null || tutorialDone.getBool('tut') == false) {
+    if (tutorialDone.getBool('tut') == null || tutorialDone.getBool('tut') == false) {
       tutorialDone.setBool('tut', false);
       tut = false;
     }
@@ -180,7 +179,7 @@ class LangawGame extends Game {
       tutorialDone.setBool('tut', true);
       tut = true;
     }
-**/    if (magnetTrue.getBool('magnet') == null) {
+    if (magnetTrue.getBool('magnet') == null) {
       magnetTrue.setBool('magnet', false);
     }
     if (magnetTrue.getBool('magnet') == true) {
