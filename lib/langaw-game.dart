@@ -60,6 +60,9 @@ class LangawGame extends Game {
   ShopDisplay powerDisplay;
   ShopDisplay warningDisplay;
   ShopDisplay creditsDisplay;
+  ShopDisplay getGreen;
+  ShopDisplay getGreen2;
+  ShopDisplay getGreen3;
   Shop shop;
   Images gemGrab;
   Tuts tuts;
@@ -75,6 +78,7 @@ class LangawGame extends Game {
   final SharedPreferences armorTrue;
   final SharedPreferences vineTrue;
   final SharedPreferences eagleTrue;
+  final SharedPreferences tutorialDone;
   View activeView;
   StartButton startButton;
   HomeButton homeButton;
@@ -87,7 +91,7 @@ class LangawGame extends Game {
   Fly fly;
   int homeamountRain = 15;
   int amountRain = 1;
-  int temAmountRain = 0;
+  int temAmountRain = 5;
   List<Rain> rains;
   List<Rain> homerains;
   int score;
@@ -95,6 +99,7 @@ class LangawGame extends Game {
   bool buy;
   bool goOn;
   int counter;
+  bool notHome = false;
   bool magnet_bought = false;
   bool shield_bought = false;
   bool heart_bought = false;
@@ -118,10 +123,19 @@ class LangawGame extends Game {
   bool eagleActive = false;
   bool magnetActive = false;
   bool arrowsActive = false;
+  bool tut;
+  bool whiteObtained = false;
+  bool greentext = false;
+  bool greentext2 = false;
+  bool poweractive = false;
+  bool reduceRain = false;
+  bool noRain = false;
+  String text;
+  String subtext;
 
   LangawGame(this.storage, this.gemsstorage, this.magnetTrue, this.gemsTrue,
       this.heartTrue, this.shieldTrue, this.arrowsTrue, this.swordsTrue,
-      this.armorTrue, this.vineTrue, this.eagleTrue) {
+      this.armorTrue, this.vineTrue, this.eagleTrue, this.tutorialDone) {
     initialize();
   }
 
@@ -141,20 +155,32 @@ class LangawGame extends Game {
     gemsdisplay = GemsDisplay(this);
     startButton = StartButton(this);
     homeButton = HomeButton(this);
-    tutsDisplay = ShopDisplay(this, 30);
-    gemDisplay = ShopDisplay(this, 24);
-    whiteDisplay = ShopDisplay(this, 24);
-    shopDisplay = ShopDisplay(this, 30);
-    powerDisplay = ShopDisplay(this, 24);
-    warningDisplay = ShopDisplay(this, 24);
-    creditsDisplay = ShopDisplay(this, 30);
+    tutsDisplay = ShopDisplay(this, 30, 0xffffffff);
+    gemDisplay = ShopDisplay(this, 24, 0xffffffff);
+    whiteDisplay = ShopDisplay(this, 24, 0xffffffff);
+    getGreen = ShopDisplay(this, 20, 0xff979797);
+    getGreen2 = ShopDisplay(this, 20, 0xff979797);
+    getGreen3 = ShopDisplay(this, 20, 0xff979797);
+    shopDisplay = ShopDisplay(this, 30, 0xffffffff);
+    powerDisplay = ShopDisplay(this, 24, 0xffffffff);
+    warningDisplay = ShopDisplay(this, 24, 0xffffffff);
+    creditsDisplay = ShopDisplay(this, 30, 0xffffffff);
     gemGrab = Images(this, 'gem.png', 1.7, 5.25, 6, 10.66662);
     credits = Credits(this);
     shop = Shop(this);
     tuts = Tuts(this);
     back = Back(this);
     loadShop();
-    if (magnetTrue.getBool('magnet') == null) {
+    tut = false;
+/*    if (tutorialDone.getBool('tut') == null || tutorialDone.getBool('tut') == false) {
+      tutorialDone.setBool('tut', false);
+      tut = false;
+    }
+    if (tutorialDone.getBool('tut') == true){
+      tutorialDone.setBool('tut', true);
+      tut = true;
+    }
+**/    if (magnetTrue.getBool('magnet') == null) {
       magnetTrue.setBool('magnet', false);
     }
     if (magnetTrue.getBool('magnet') == true) {
@@ -382,7 +408,8 @@ class LangawGame extends Game {
   }
 
   void spawnRain() {
-    if (arrowsActive == false) {
+    notHome = true;
+    if (arrowsActive == false || reduceRain == false || noRain == false) {
       if (activeView == View.playing) if (amountRain > rains.length) {
         rains.add(Rain(this));
         power_up.forEach((Powers power) {
@@ -391,8 +418,16 @@ class LangawGame extends Game {
           }
         });
       }
-    } else {
-      temAmountRain = 5;
+    }
+    if (arrowsActive || reduceRain || noRain) {
+      if(noRain){
+        temAmountRain = 0;
+      }
+      else if(reduceRain){
+        temAmountRain = 1;
+      }else{
+        temAmountRain = 5;
+      }
       if (activeView == View.playing) if (temAmountRain < rains.length) {
         rains.removeLast();
       }
@@ -407,6 +442,7 @@ class LangawGame extends Game {
     }
     if (activeView == View.home || activeView == View.lost)
       if (homeamountRain > homerains.length) {
+        notHome = false;
         homerains.add(Rain(this));
       }
   }
@@ -456,6 +492,8 @@ class LangawGame extends Game {
       warningDisplay.render(canvas);
       gemGrab.render(canvas);
     }
+    if (greentext) getGreen.render(canvas);
+    if (greentext) getGreen2.render(canvas);
     if (activeView == View.credits) creditsDisplay.render(canvas);
     if (activeView == View.shopping && magnet_bought == true) magnet.render(
         canvas);
@@ -510,9 +548,14 @@ class LangawGame extends Game {
           rain.onScreen = false;
         }
       }
-      if (rain.rainColor == rain.colorWhite &&
-          rain.y > fly.y + tileSize - raintileSize &&
-          rain.x + raintileSize > fly.x && fly.width + fly.x > rain.x) {
+      if (rain.rainColor == rain.colorWhite && rain.y > fly.y + tileSize - raintileSize && rain.x + raintileSize > fly.x && fly.width + fly.x > rain.x) {
+        if(tut == false && whiteObtained == false){
+          whiteObtained = true;
+          powerx = 2.5;
+          power = 'chest-armor.png';
+          power_up.add(Powers(this, powerx, 10, power, 1));
+          firstFree = false;
+        }
         if (firstFree) {
           powerx = 0;
           power = randomChoice(powers);
@@ -569,6 +612,9 @@ class LangawGame extends Game {
         power.eliminate());
     if (activeView == View.playing) power_up.removeWhere((
         Powers power) => (power.remove == true));
+    if (greentext) getGreen.update(text, 1.9, 9);
+    if (greentext) getGreen2.update(subtext, 1.9, 9.5);
+//    if (greentext2) getGreen3.update('Get green', 1.9, 9);
   }
 
   void resize(Size size) {
@@ -725,6 +771,7 @@ class LangawGame extends Game {
       power_up.forEach((Powers power) {
         if (power.rect.contains(d.globalPosition)) {
           power.active = true;
+          poweractive = true;
         }
       });
     }

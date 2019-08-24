@@ -1,1 +1,1 @@
-enum View {home, playing, lost, shopping, tuts, credits}
+enum View {home, playing, lost, shopping, tuts, credits, tut}

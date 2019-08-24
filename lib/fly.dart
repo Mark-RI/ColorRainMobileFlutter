@@ -39,15 +39,19 @@ class Fly{
   }
 
   void render(Canvas c) {
-    if(renderL1){
-      c.drawCircle(Offset(x + (game.tileSize / 1.6), y + (game.tileSize / 2)), game.tileSize / 2, paint1);
-      c.drawCircle(Offset(x + (game.tileSize / 1.25), y + (game.tileSize / 2)), game.tileSize / 2.2, paint2);
+    if(renderL1) {
+      if (game.smallActive == false) {
+        c.drawCircle(Offset(x + (game.tileSize / 1.6), y + (game.tileSize / 2)), game.tileSize / 2, paint1);
+        c.drawCircle(Offset(x + (game.tileSize / 1.25), y + (game.tileSize / 2)), game.tileSize / 2.2, paint2);
 //      ball.renderRect(c, L1Rect.deflate(2));
+      }
     }
-    if(renderR1){
-      c.drawCircle(Offset(x - ((game.tileSize / 1.6) - game.tileSize), y + (game.tileSize / 2)), game.tileSize / 2, paint1);
-      c.drawCircle(Offset(x - ((game.tileSize / 1.25) - game.tileSize), y + (game.tileSize / 2)), game.tileSize / 2.2, paint2);
+    if(renderR1) {
+      if (game.smallActive == false) {
+        c.drawCircle(Offset(x - ((game.tileSize / 1.6) - game.tileSize), y + (game.tileSize / 2)), game.tileSize / 2, paint1);
+        c.drawCircle(Offset(x - ((game.tileSize / 1.25) - game.tileSize), y + (game.tileSize / 2)), game.tileSize / 2.2, paint2);
 //      ball.renderRect(c, L1Rect.deflate(2));
+      }
     }
     if(game.smallActive == false){
       width = game.tileSize;
@@ -104,6 +108,8 @@ class Fly{
       }
       else{
         game.activeView = View.lost;
+        game.greentext = false;
+        game.tut = true;
         game.goOn = false;
         game.power_up = List<Powers>();
         game.rains = List<Rain>();

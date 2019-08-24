@@ -52,11 +52,15 @@ class Powers {
       if(power == "eagle-emblem.png"){
         rainlimit = 20;
         game.eagleActive = true;
-      }else{
+      }
+      else{
         rainlimit = game.amountRain * 2;
       }
       if(power == "chest-armor.png") {
         game.smallActive = true;
+        if(game.tut == false){
+          rainlimit = 30;
+        }
       }
       if(power == "all-for-one.png") {
         game.swordActive = true;

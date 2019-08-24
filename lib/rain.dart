@@ -81,17 +81,73 @@ class Rain {
     y = rainYpos[rnd.nextInt(rainYpos.length)];
     rainRect = Rect.fromLTWH(x, y, game.raintileSize, game.raintileSize);
     rainPaint = Paint();
-    if (game.eagleActive) {
-      rainColor = colorGreen;
-      rainPaint.color = Color(rainColor);
-    }
-    else {
-      if (game.activeView == View.playing && game.beanstalk_bought == true) {
-        if (game.amountRain < 4) {
-          rainColor = colorGreen;
-          rainPaint.color = Color(rainColor);
+    if(game.tut == false && game.notHome){
+      game.greentext = true;
+      if (game.amountRain > 4 && game.whiteObtained == false) {
+        game.reduceRain = true;
+        game.text = 'White gives you';
+        game.subtext = 'power ups';
+        rainColor = colorWhite;
+        rainPaint.color = Color(rainColor);
+      }
+      if (game.amountRain > 4 && game.whiteObtained && game.poweractive == false) {
+        game.reduceRain = false;
+        game.noRain = true;
+        game.text = 'Click to use power';
+        game.subtext = 'Purchase more at store';
+        rainColor = colorWhite;
+        rainPaint.color = Color(rainColor);
+      }
+      if (game.amountRain <= 4) {
+        game.text = 'Green increases score';
+        game.subtext = 'Get green';
+        rainColor = colorGreen;
+        rainPaint.color = Color(rainColor);
+      }
+      if (game.amountRain > 4 && game.amountRain <= 10 && game.poweractive) {
+        game.noRain = false;
+        game.text = 'Avoid all other';
+        game.subtext = 'colors';
+        rainColor = colors2[rnd.nextInt(colors2.length)];
+        rainPaint.color = Color(rainColor);
+      }
+      if (game.amountRain > 10) {
+        game.greentext = false;
+        rainColor = colors2[rnd.nextInt(colors2.length)];
+        rainPaint.color = Color(rainColor);
+      }
+
+    }else {
+      if (game.eagleActive) {
+        rainColor = colorGreen;
+        rainPaint.color = Color(rainColor);
+      }
+      else {
+        if (game.activeView == View.playing && game.beanstalk_bought == true) {
+          if (game.amountRain < 4) {
+            rainColor = colorGreen;
+            rainPaint.color = Color(rainColor);
+          }
+          else {
+            if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
+                game.arrows_bought || game.armor_bought || game.shield_bought) {
+              if (game.firstFree || game.secondFree || game.thirdFree) {
+                rainColor = colors[rnd.nextInt(colors.length)];
+                rainPaint.color = Color(rainColor);
+              }
+              else {
+                rainColor = colors2[rnd.nextInt(colors2.length)];
+                rainPaint.color = Color(rainColor);
+              }
+            }
+            else {
+              rainColor = colors2[rnd.nextInt(colors2.length)];
+              rainPaint.color = Color(rainColor);
+            }
+          }
         }
-        else {
+        if (game.beanstalk_bought == false || game.activeView == View.lost ||
+            game.activeView == View.home) {
           if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
               game.arrows_bought || game.armor_bought || game.shield_bought) {
             if (game.firstFree || game.secondFree || game.thirdFree) {
@@ -107,24 +163,6 @@ class Rain {
             rainColor = colors2[rnd.nextInt(colors2.length)];
             rainPaint.color = Color(rainColor);
           }
-        }
-      }
-      if (game.beanstalk_bought == false || game.activeView == View.lost ||
-          game.activeView == View.home) {
-        if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
-            game.arrows_bought || game.armor_bought || game.shield_bought) {
-          if (game.firstFree || game.secondFree || game.thirdFree) {
-            rainColor = colors[rnd.nextInt(colors.length)];
-            rainPaint.color = Color(rainColor);
-          }
-          else {
-            rainColor = colors2[rnd.nextInt(colors2.length)];
-            rainPaint.color = Color(rainColor);
-          }
-        }
-        else {
-          rainColor = colors2[rnd.nextInt(colors2.length)];
-          rainPaint.color = Color(rainColor);
         }
       }
     }

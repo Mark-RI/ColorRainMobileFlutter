@@ -11,11 +11,12 @@ class ShopDisplay {
   TextStyle textStyle;
   Offset position;
   double font;
+  int color;
 
-  ShopDisplay(this.game, this.font) {
+  ShopDisplay(this.game, this.font, this.color) {
     painter = TextPainter(textAlign: TextAlign.start, textDirection: TextDirection.ltr);
 
-    textStyle = TextStyle(color: Color(0xffffffff), fontSize: font);
+    textStyle = TextStyle(color: Color(color), fontSize: font, fontWeight: FontWeight.bold);
 
     position = Offset.zero;
 
@@ -34,9 +35,6 @@ class ShopDisplay {
 
     painter.layout();
 
-position = Offset(
-(game.screenSize.width / x) - (painter.width / x),
-(game.tileSize * y),
-);
-}
+    position = Offset((game.screenSize.width / x) - (painter.width / x), (game.tileSize * y));
+    }
 }

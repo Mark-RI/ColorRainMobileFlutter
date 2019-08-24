@@ -22,6 +22,7 @@ void main() async {
   SharedPreferences armorTrue = await SharedPreferences.getInstance();
   SharedPreferences vineTrue = await SharedPreferences.getInstance();
   SharedPreferences eagleTrue = await SharedPreferences.getInstance();
+  SharedPreferences tutorialDone = await SharedPreferences.getInstance();
 
   Flame.images.loadAll(<String>[
     'circle.png',
@@ -51,7 +52,7 @@ void main() async {
   await flameUtil.fullScreen();
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
 
-  LangawGame game = LangawGame(storage, gemsstorage, magnetTrue, gemsTrue, heartTrue, shieldTrue, arrowsTrue, swordsTrue, armorTrue, vineTrue, eagleTrue);
+  LangawGame game = LangawGame(storage, gemsstorage, magnetTrue, gemsTrue, heartTrue, shieldTrue, arrowsTrue, swordsTrue, armorTrue, vineTrue, eagleTrue, tutorialDone);
   runApp(game.widget);
 
   TapGestureRecognizer tapper = TapGestureRecognizer();
