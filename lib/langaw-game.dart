@@ -16,6 +16,7 @@ import 'package:langaw/highscore.dart';
 import 'package:langaw/gems.dart';
 import 'package:langaw/shop.dart';
 import 'package:langaw/start-button.dart';
+import 'package:langaw/circle.dart';
 import 'package:langaw/shopping.dart';
 import 'package:langaw/shoptext.dart';
 import 'package:langaw/magnet.dart';
@@ -33,11 +34,14 @@ import 'package:langaw/back_button.dart';
 import 'package:langaw/heart-pixel.dart';
 import 'package:langaw/render_power.dart';
 import 'package:langaw/tuts.dart';
+import 'package:langaw/tap.dart';
 import 'package:langaw/image.dart';
 import 'package:langaw/credits.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
 class LangawGame extends Game {
+  Tap tap;
+//  Circle circle;
   Back back;
   Beanstalk beanstalk;
   Eagle eagle;
@@ -94,6 +98,7 @@ class LangawGame extends Game {
   int temAmountRain = 5;
   List<Rain> rains;
   List<Rain> homerains;
+  List<Circle> circle;
   int score;
   ScoreDisplay scoreDisplay;
   bool buy;
@@ -130,6 +135,8 @@ class LangawGame extends Game {
   bool poweractive = false;
   bool reduceRain = false;
   bool noRain = false;
+  bool tapRDone = false;
+  bool tapLDone = false;
   String text;
   String subtext;
 
@@ -143,12 +150,15 @@ class LangawGame extends Game {
     shoppingView = List<ShoppingView>();
     power_up = List<Powers>();
     homerains = List<Rain>();
+    circle = List<Circle>();
     rains = List<Rain>();
     resize(await Flame.util.initialDimensions());
     score = 0;
     scoreDisplay = ScoreDisplay(this);
     activeView = View.home;
     spawnFly();
+    spawnCircle();
+//    circle = Circle(this);
     lostView = LostView(this);
     homeView = HomeView(this);
     highscoreDisplay = HighscoreDisplay(this);
@@ -166,6 +176,7 @@ class LangawGame extends Game {
     warningDisplay = ShopDisplay(this, 24, 0xffffffff);
     creditsDisplay = ShopDisplay(this, 30, 0xffffffff);
     gemGrab = Images(this, 'gem.png', 1.7, 5.25, 6, 10.66662);
+    tap = Tap();
     credits = Credits(this);
     shop = Shop(this);
     tuts = Tuts(this);
@@ -316,7 +327,6 @@ class LangawGame extends Game {
     }
   }
 
-
   void loadShop() {
     shoppingView.add(ShoppingView(
         this,
@@ -401,6 +411,10 @@ class LangawGame extends Game {
         'eagle'));
   }
 
+  void spawnCircle(){
+    circle.add(Circle(this));
+  }
+
   void spawnFly() {
     fly = Fly(this, (screenSize.width - tileSize) / 2,
         screenSize.height - (btileSize * 2) - (tileSize / 8));
@@ -439,7 +453,7 @@ class LangawGame extends Game {
         });
       }
     }
-    if (activeView == View.home || activeView == View.lost)
+    if (activeView == View.home || activeView == View.lost || activeView == View.credits)
       if (homeamountRain > homerains.length) {
         notHome = false;
         homerains.add(Rain(this));
@@ -462,7 +476,7 @@ class LangawGame extends Game {
     spawnRain();
     if (activeView == View.playing) rains.forEach((Rain rain) =>
         rain.render(canvas));
-    if (activeView == View.home || activeView == View.lost) homerains.forEach((
+    if (activeView == View.home || activeView == View.lost || activeView == View.credits) homerains.forEach((
         Rain rain) => rain.render(canvas));
     if (activeView == View.playing) fly.render(canvas);
     if (activeView == View.playing) scoreDisplay.render(canvas);
@@ -516,15 +530,18 @@ class LangawGame extends Game {
         activeView == View.credits) back.render(canvas);
     if (activeView == View.playing) power_up.forEach((Powers powers) =>
         powers.render(canvas));
+    if (activeView == View.playing) circle.forEach((Circle circle) =>
+        circle.render(canvas));
   }
 
   void update(double t) {
     if (activeView == View.playing) fly.update(t);
     if (activeView == View.playing) {
+      circle.removeWhere((Circle circle) => (tapRDone && tapLDone));
       rains.forEach((Rain rain) => rain.update(t));
       rains.removeWhere((Rain rain) => (rain.onScreen == false));
     }
-    if (activeView == View.home || activeView == View.lost) {
+    if (activeView == View.home || activeView == View.lost || activeView == View.credits) {
       homerains.forEach((Rain rain) => rain.update(t));
       homerains.removeWhere((Rain rain) => (rain.onScreen == false));
     }
@@ -614,6 +631,8 @@ class LangawGame extends Game {
     if (greentext) getGreen.update(text, 1.9, 9);
     if (greentext) getGreen2.update(subtext, 1.9, 9.5);
 //    if (greentext2) getGreen3.update('Get green', 1.9, 9);
+    if (activeView == View.playing) circle.forEach((Circle circle) =>
+        circle.update(t));
   }
 
   void resize(Size size) {
@@ -642,11 +661,6 @@ class LangawGame extends Game {
       if (credits.rect.contains(d.globalPosition)) {
         if (goOn) {
           credits.onTapDown();
-        }
-      }
-      if (startButton.rect.contains(d.globalPosition)) {
-        if (goOn) {
-          homeView.onTapDown();
         }
       }
     }
@@ -688,6 +702,11 @@ class LangawGame extends Game {
     fly.isRight = false;
     fly.isLeft = false;
 
+    if(activeView == View.home){
+    if (startButton.rect.contains(d.globalPosition)) {
+        homeView.onTapDown();
+      }
+    }
     if (activeView == View.lost) {
       if (startButton.rect.contains(d.globalPosition) && goOn == true) {
         lostView.onTapDown();

@@ -41,23 +41,57 @@ void main() async {
     'beanstalk.png',
     'back.png',
     'home.png',
-    'heart-pixel.png',
-    'heart-lost.png',
     'tuts.png',
     'gem.png',
     'credits.png',
   ]);
 
+  await SystemChrome.setEnabledSystemUIOverlays([]);
+
   Util flameUtil = Util();
   await flameUtil.fullScreen();
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
 
-  LangawGame game = LangawGame(storage, gemsstorage, magnetTrue, gemsTrue, heartTrue, shieldTrue, arrowsTrue, swordsTrue, armorTrue, vineTrue, eagleTrue, tutorialDone);
-  runApp(game.widget);
+  runApp(MyApp(storage, gemsstorage, magnetTrue, gemsTrue, heartTrue, shieldTrue, arrowsTrue, swordsTrue, armorTrue, vineTrue, eagleTrue, tutorialDone));
+}
 
-  TapGestureRecognizer tapper = TapGestureRecognizer();
-  tapper.onTapDown = game.onTapDown;
-  tapper.onTapUp = game.onTapUp;
-  tapper.onTapCancel = game.onTapCancel;
-  flameUtil.addGestureRecognizer(tapper);
+class MyApp extends StatelessWidget {
+
+  final SharedPreferences storage;
+  final SharedPreferences gemsstorage;
+  final SharedPreferences gemsTrue;
+  final SharedPreferences magnetTrue;
+  final SharedPreferences heartTrue;
+  final SharedPreferences shieldTrue;
+  final SharedPreferences arrowsTrue;
+  final SharedPreferences swordsTrue;
+  final SharedPreferences armorTrue;
+  final SharedPreferences vineTrue;
+  final SharedPreferences eagleTrue;
+  final SharedPreferences tutorialDone;
+  LangawGame game;
+
+  MyApp(this.storage, this.gemsstorage, this.magnetTrue, this.gemsTrue, this.heartTrue, this.shieldTrue, this.arrowsTrue, this.swordsTrue, this.armorTrue, this.vineTrue, this.eagleTrue, this.tutorialDone){
+    init();
+  }
+
+  init() {
+    game = LangawGame(storage, gemsstorage, magnetTrue, gemsTrue, heartTrue, shieldTrue, arrowsTrue, swordsTrue, armorTrue, vineTrue, eagleTrue, tutorialDone);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Container(
+        child:
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapCancel: game.onTapCancel,
+          onTapDown: game.onTapDown,
+          onTapUp: game.onTapUp,
+          child: game.widget,
+        ),
+      ),
+    );
+  }
 }

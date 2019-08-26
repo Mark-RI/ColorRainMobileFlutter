@@ -83,6 +83,16 @@ class Rain {
     rainPaint = Paint();
     if(game.tut == false && game.notHome){
       game.greentext = true;
+      if (game.amountRain <= 1 &&  game.tapLDone == false && game.tapRDone == false) {
+        game.noRain = true;
+        game.text = 'Tap left of ball';
+        game.subtext = 'to move left';
+      }
+      if (game.amountRain <= 1 &&  game.tapLDone && game.tapRDone == false) {
+        game.noRain = true;
+        game.text = 'Tap right of ball';
+        game.subtext = 'to move right';
+      }
       if (game.amountRain > 4 && game.whiteObtained == false) {
         game.reduceRain = true;
         game.text = 'White gives you';
@@ -95,10 +105,9 @@ class Rain {
         game.noRain = true;
         game.text = 'Click to use power';
         game.subtext = 'Purchase more at store';
-        rainColor = colorWhite;
-        rainPaint.color = Color(rainColor);
       }
-      if (game.amountRain <= 4) {
+      if (game.amountRain <= 4 && game.tapRDone && game.tapLDone) {
+        game.noRain = false;
         game.text = 'Green increases score';
         game.subtext = 'Get green';
         rainColor = colorGreen;
@@ -183,12 +192,12 @@ class Rain {
       if (y >= game.fly.y + game.tileSize - game.raintileSize - yIncrease) {
         onScreen = false;
       }
-    if (game.activeView == View.playing || game.activeView == View.home || game.activeView == View.lost)
+    if (game.activeView == View.playing || game.activeView == View.home || game.activeView == View.lost || game.activeView == View.credits)
       if (onScreen) {
         y += game.raintileSize * 9 * t;
         rainRect = rainRect.translate(0, game.raintileSize * 9 * t);
       }
-    if (game.activeView == View.home || game.activeView == View.lost) {
+    if (game.activeView == View.home || game.activeView == View.lost || game.activeView == View.credits) {
       if (y >= game.screenSize.height) {
         onScreen = false;
       }

@@ -65,6 +65,9 @@ class Fly{
 
   void update(double t) {
     if (isLeft) {
+      if(x <= game.screenSize.width * 0.3) {
+        game.tapLDone = true;
+      }
       renderL1 = false;
       renderR1 = false;
       if (x >= game.tileSize) {
@@ -72,12 +75,12 @@ class Fly{
         renderR1 = false;
         x += (game.tileSize * -7 * t);
         flyRect = flyRect.translate(game.tileSize * -7 * t, 0);
-//        if (renderL1) {
-//          L1Rect = L1Rect.translate(game.tileSize * -7 * t, 0);
-//        }
       }
     }
     if (isRight) {
+      if(x >= (game.screenSize.width * 0.7) - game.tileSize && game.tapLDone) {
+        game.tapRDone = true;
+      }
       renderL1 = false;
       renderR1 = false;
       if (x <= game.screenSize.width - (game.tileSize * 2)){
@@ -85,7 +88,6 @@ class Fly{
         renderR1 = true;
         x += (game.tileSize * 7 * t);
         flyRect = flyRect.translate(game.tileSize * 7 * t, 0);
-//        L1Rect = L1Rect.translate(game.tileSize * 7 * t, 0);
       }
     }
     if(isRight == false && isLeft == false){

@@ -23,7 +23,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  flame: ^0.14.2
+  flame: ^0.15.1
   shared_preferences: ^0.5.1+2
   dart_random_choice: ^0.0.2
   flutter_launcher_icons: "^0.7.2"
@@ -62,16 +62,11 @@ flutter:
      - assets/images/beanstalk.png
      - assets/images/back.png
      - assets/images/home.png
-     - assets/images/heart-pixel.png
-     - assets/images/heart-lost.png
      - assets/images/tuts.png
      - assets/images/gem.png
      - assets/images/credits.png
-     - assets/images/icon.png
-     - assets/images/icon2.png
-     - assets/images/icon3.png
      - assets/images/icon5.png
-     - assets/images/icon7.png
+     - assets/Tap.flr
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
