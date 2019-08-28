@@ -157,7 +157,7 @@ class Rain {
           }
         }
         if (game.beanstalk_bought == false || game.activeView == View.lost ||
-            game.activeView == View.home) {
+            game.activeView == View.home || game.activeView == View.credits) {
           if (game.swords_bought || game.magnet_bought || game.eagle_bought ||
               game.arrows_bought || game.armor_bought || game.shield_bought) {
             if (game.firstFree || game.secondFree || game.thirdFree) {

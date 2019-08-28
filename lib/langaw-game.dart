@@ -3,6 +3,7 @@ import 'package:flame/game.dart';// Game loop library
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:langaw/fly.dart';
+import 'package:langaw/ads.dart';
 import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:langaw/rain.dart';
@@ -18,6 +19,7 @@ import 'package:langaw/shop.dart';
 import 'package:langaw/start-button.dart';
 import 'package:langaw/circle.dart';
 import 'package:langaw/shopping.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:langaw/shoptext.dart';
 import 'package:langaw/magnet.dart';
 import 'package:langaw/shield.dart';
@@ -41,7 +43,6 @@ import 'package:flare_flutter/flare_actor.dart';
 
 class LangawGame extends Game {
   Tap tap;
-//  Circle circle;
   Back back;
   Beanstalk beanstalk;
   Eagle eagle;
@@ -49,6 +50,7 @@ class LangawGame extends Game {
   Arrows arrows;
   Rupee rupee;
   Swords swords;
+  Ads ads;
   int increasegems = 1;
   Magnet magnet;
   Shield shield;
@@ -66,7 +68,13 @@ class LangawGame extends Game {
   ShopDisplay creditsDisplay;
   ShopDisplay getGreen;
   ShopDisplay getGreen2;
-  ShopDisplay getGreen3;
+  ShopDisplay t1;
+  ShopDisplay t2;
+  ShopDisplay t3;
+  ShopDisplay t4;
+  ShopDisplay t5;
+  ShopDisplay t6;
+  ShopDisplay t7;
   Shop shop;
   Images gemGrab;
   Tuts tuts;
@@ -132,6 +140,7 @@ class LangawGame extends Game {
   bool whiteObtained = false;
   bool greentext = false;
   bool greentext2 = false;
+  bool credittext = false;
   bool poweractive = false;
   bool reduceRain = false;
   bool noRain = false;
@@ -154,6 +163,7 @@ class LangawGame extends Game {
     rains = List<Rain>();
     resize(await Flame.util.initialDimensions());
     score = 0;
+    ads = Ads(this, -0.6, 10.6);
     scoreDisplay = ScoreDisplay(this);
     activeView = View.home;
     spawnFly();
@@ -170,7 +180,13 @@ class LangawGame extends Game {
     whiteDisplay = ShopDisplay(this, 24, 0xffffffff);
     getGreen = ShopDisplay(this, 20, 0xff979797);
     getGreen2 = ShopDisplay(this, 20, 0xff979797);
-    getGreen3 = ShopDisplay(this, 20, 0xff979797);
+    t1 = ShopDisplay(this, 20, 0xffffffff);
+    t2 = ShopDisplay(this, 19, 0xffffffff);
+    t3 = ShopDisplay(this, 20, 0xffffffff);
+    t4 = ShopDisplay(this, 19, 0xffffffff);
+    t5 = ShopDisplay(this, 19, 0xffffffff);
+    t6 = ShopDisplay(this, 19, 0xffffffff);
+    t7 = ShopDisplay(this, 19, 0xffffffff);
     shopDisplay = ShopDisplay(this, 30, 0xffffffff);
     powerDisplay = ShopDisplay(this, 24, 0xffffffff);
     warningDisplay = ShopDisplay(this, 24, 0xffffffff);
@@ -480,67 +496,70 @@ class LangawGame extends Game {
         Rain rain) => rain.render(canvas));
     if (activeView == View.playing) fly.render(canvas);
     if (activeView == View.playing) scoreDisplay.render(canvas);
-    if (activeView == View.home) homeView.render(canvas);
-    if (activeView == View.lost) lostView.render(canvas);
-    if (activeView == View.home || activeView == View.shopping) gemsdisplay
-        .render(canvas);
-    if (activeView == View.shopping) shoppingView.forEach((
-        ShoppingView shoppingview) => shoppingview.render(canvas));
-    if (activeView == View.lost) highscoreDisplay.render(canvas);
-    if (activeView == View.home || activeView == View.lost) {
-      startButton.render(canvas);
+    if (activeView == View.home) {
+      ads.render(canvas);
+      homeView.render(canvas);
     }
-    if (activeView == View.lost) {
-      homeButton.render(canvas);
-    }
-    if (activeView == View.home) shop.render(canvas);
-    if (activeView == View.home) credits.render(canvas);
-    if (activeView == View.home) tuts.render(canvas);
-    if (activeView == View.shopping) shopDisplay.render(canvas);
-    if (activeView == View.tuts) {
-      tutsDisplay.render(canvas);
-      gemDisplay.render(canvas);
-      whiteDisplay.render(canvas);
-      powerDisplay.render(canvas);
-      warningDisplay.render(canvas);
-      gemGrab.render(canvas);
-    }
-    if (greentext) getGreen.render(canvas);
-    if (greentext) getGreen2.render(canvas);
-    if (activeView == View.credits) creditsDisplay.render(canvas);
-    if (activeView == View.shopping && magnet_bought == true) magnet.render(
-        canvas);
-    if (activeView == View.shopping && shield_bought == true) shield.render(
-        canvas);
-    if (activeView == View.shopping && heart_bought == true) heart.render(
-        canvas);
-    if (activeView == View.shopping && swords_bought == true) swords.render(
-        canvas);
-    if (activeView == View.shopping && rupee_bought == true) rupee.render(
-        canvas);
-    if (activeView == View.shopping && arrows_bought == true) arrows.render(
-        canvas);
-    if (activeView == View.shopping && armor_bought == true) armor.render(
-        canvas);
-    if (activeView == View.shopping && eagle_bought == true) eagle.render(
-        canvas);
-    if (activeView == View.shopping && beanstalk_bought == true) beanstalk
-        .render(canvas);
-    if (activeView == View.shopping || activeView == View.tuts ||
-        activeView == View.credits) back.render(canvas);
-    if (activeView == View.playing) power_up.forEach((Powers powers) =>
-        powers.render(canvas));
-    if (activeView == View.playing) circle.forEach((Circle circle) =>
-        circle.render(canvas));
+      if (activeView == View.lost) lostView.render(canvas);
+      if (activeView == View.home || activeView == View.shopping) gemsdisplay
+          .render(canvas);
+      if (activeView == View.shopping) shoppingView.forEach((
+          ShoppingView shoppingview) => shoppingview.render(canvas));
+      if (activeView == View.lost) highscoreDisplay.render(canvas);
+      if (activeView == View.home || activeView == View.lost) {
+        startButton.render(canvas);
+      }
+      if (activeView == View.lost) {
+        homeButton.render(canvas);
+      }
+      if (activeView == View.home) shop.render(canvas);
+      if (activeView == View.home) credits.render(canvas);
+      if (activeView == View.home) tuts.render(canvas);
+      if (activeView == View.shopping) shopDisplay.render(canvas);
+      if (activeView == View.tuts) {
+        tutsDisplay.render(canvas);
+        gemDisplay.render(canvas);
+        whiteDisplay.render(canvas);
+        powerDisplay.render(canvas);
+        warningDisplay.render(canvas);
+        gemGrab.render(canvas);
+      }
+
+      if (activeView == View.credits) {
+        creditsDisplay.render(canvas);
+      }
+      if (greentext) getGreen.render(canvas);
+      if (greentext) getGreen2.render(canvas);
+      if (activeView == View.credits) {
+        t1.render(canvas);
+        t2.render(canvas);
+        t3.render(canvas);
+        t4.render(canvas);
+        t5.render(canvas);
+        t6.render(canvas);
+        t7.render(canvas);
+      }
+      if (activeView == View.shopping && magnet_bought == true) magnet.render(canvas);
+      if (activeView == View.shopping && shield_bought == true) shield.render(canvas);
+      if (activeView == View.shopping && heart_bought == true) heart.render(canvas);
+      if (activeView == View.shopping && swords_bought == true) swords.render(canvas);
+      if (activeView == View.shopping && rupee_bought == true) rupee.render(canvas);
+      if (activeView == View.shopping && arrows_bought == true) arrows.render(canvas);
+      if (activeView == View.shopping && armor_bought == true) armor.render(canvas);
+      if (activeView == View.shopping && eagle_bought == true) eagle.render(canvas);
+      if (activeView == View.shopping && beanstalk_bought == true) beanstalk.render(canvas);
+      if (activeView == View.shopping || activeView == View.tuts || activeView == View.credits) back.render(canvas);
+      if (activeView == View.playing) power_up.forEach((Powers powers) => powers.render(canvas));
+      if (activeView == View.playing && tut == false) circle.forEach((Circle circle) => circle.render(canvas));
   }
 
   void update(double t) {
     if (activeView == View.playing) fly.update(t);
     if (activeView == View.playing) {
-      circle.removeWhere((Circle circle) => (tapRDone && tapLDone));
       rains.forEach((Rain rain) => rain.update(t));
       rains.removeWhere((Rain rain) => (rain.onScreen == false));
     }
+    if (activeView == View.playing && tut == false)circle.removeWhere((Circle circle) => (tapRDone && tapLDone));
     if (activeView == View.home || activeView == View.lost || activeView == View.credits) {
       homerains.forEach((Rain rain) => rain.update(t));
       homerains.removeWhere((Rain rain) => (rain.onScreen == false));
@@ -616,10 +635,10 @@ class LangawGame extends Game {
     if (activeView == View.shopping) shopDisplay.update('SHOP', 2, 0.25);
     if (activeView == View.tuts) {
       tutsDisplay.update('HOW TO PLAY', 1.7, 0.25);
-      gemDisplay.update('Green increases gems and score.', 1, 1.5);
-      whiteDisplay.update('Obtain powers with white.', 1.85, 2.5);
-      powerDisplay.update('Unlock power at the store.', 1.8, 3.5);
-      warningDisplay.update('Avoid all other colors.', 1.7, 4.5);
+      gemDisplay.update('Green increases gems and score', 1, 1.5);
+      whiteDisplay.update('Obtain powers with white', 1.85, 2.5);
+      powerDisplay.update('Unlock power at the store', 1.8, 3.5);
+      warningDisplay.update('Avoid all other colors', 1.7, 4.5);
     }
     if (activeView == View.credits) creditsDisplay.update('CREDITS', 1.9, 0.25);
     if (activeView == View.shopping) shoppingView.forEach((
@@ -630,9 +649,17 @@ class LangawGame extends Game {
         Powers power) => (power.remove == true));
     if (greentext) getGreen.update(text, 1.9, 9);
     if (greentext) getGreen2.update(subtext, 1.9, 9.5);
-//    if (greentext2) getGreen3.update('Get green', 1.9, 9);
-    if (activeView == View.playing) circle.forEach((Circle circle) =>
+    if (activeView == View.playing && tut == false) circle.forEach((Circle circle) =>
         circle.update(t));
+    if (activeView == View.credits) {
+      t1.update('Game Engineer', 1.9, 2);
+      t2.update('Markel Rebollo (astk.cf)', 1.9, 3);
+      t3.update('Art & Design', 1.9, 4.5);
+        t4.update('Lorc (game-icons.net)', 1.9, 5.5);
+      t5.update('Delapouite (game-icons.net)', 1.9, 6.5);
+      t6.update('Skoll (game-icons.net)', 1.9, 7.5);
+      t7.update('AhNinniah (ahninniah.carbonmade.com)', 1.9, 8.5);
+    }
   }
 
   void resize(Size size) {
@@ -704,8 +731,11 @@ class LangawGame extends Game {
 
     if(activeView == View.home){
     if (startButton.rect.contains(d.globalPosition)) {
-        homeView.onTapDown();
+      homeView.onTapDown();
       }
+    else if (ads.rect.contains(d.globalPosition)) {
+      launchURL();
+    }
     }
     if (activeView == View.lost) {
       if (startButton.rect.contains(d.globalPosition) && goOn == true) {
@@ -799,4 +829,14 @@ class LangawGame extends Game {
     fly.isLeft = false;
     fly.isRight = false;
   }
+
+  launchURL() async {
+    const url = 'http://astk.cf';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
 }

@@ -11,6 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
 
+  await SystemChrome.setEnabledSystemUIOverlays([]);
+
+  Util flameUtil = Util();
+  await flameUtil.fullScreen();
+  await flameUtil.setOrientation(DeviceOrientation.portraitUp);
+
   SharedPreferences storage = await SharedPreferences.getInstance();
   SharedPreferences gemsstorage = await SharedPreferences.getInstance();
   SharedPreferences magnetTrue = await SharedPreferences.getInstance();
@@ -44,13 +50,8 @@ void main() async {
     'tuts.png',
     'gem.png',
     'credits.png',
+    'banner2.jpg',
   ]);
-
-  await SystemChrome.setEnabledSystemUIOverlays([]);
-
-  Util flameUtil = Util();
-  await flameUtil.fullScreen();
-  await flameUtil.setOrientation(DeviceOrientation.portraitUp);
 
   runApp(MyApp(storage, gemsstorage, magnetTrue, gemsTrue, heartTrue, shieldTrue, arrowsTrue, swordsTrue, armorTrue, vineTrue, eagleTrue, tutorialDone));
 }

@@ -12,9 +12,9 @@ class Back {
   Back(this.game) {
     rect = Rect.fromLTWH(
       game.tileSize * 0.52346,
-      game.tileSize * .25,
-      game.tileSize * 0.9 * 0.8,
-      game.tileSize * 0.9 * 0.8,
+      game.tileSize * .125,
+      game.tileSize * 0.9 * 0.8 * 1.5,
+      game.tileSize * 0.9 * 0.8 * 1.5,
     );
     sprite = Sprite('back.png');
   }

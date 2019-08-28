@@ -65,7 +65,7 @@ class Fly{
 
   void update(double t) {
     if (isLeft) {
-      if(x <= game.screenSize.width * 0.3) {
+      if(x <= game.screenSize.width * 0.35) {
         game.tapLDone = true;
       }
       renderL1 = false;
@@ -78,7 +78,7 @@ class Fly{
       }
     }
     if (isRight) {
-      if(x >= (game.screenSize.width * 0.7) - game.tileSize && game.tapLDone) {
+      if(x >= (game.screenSize.width * 0.65) - game.tileSize && game.tapLDone) {
         game.tapRDone = true;
       }
       renderL1 = false;
@@ -110,6 +110,8 @@ class Fly{
       }
       else{
         game.activeView = View.lost;
+        game.tapRDone = false;
+        game.tapLDone = false;
         game.greentext = false;
         game.tut = true;
         game.goOn = false;
