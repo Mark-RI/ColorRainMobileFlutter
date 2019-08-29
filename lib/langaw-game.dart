@@ -163,7 +163,7 @@ class LangawGame extends Game {
     rains = List<Rain>();
     resize(await Flame.util.initialDimensions());
     score = 0;
-    ads = Ads(this, -0.6, 10.6);
+    ads = Ads(this, -0.6, 10);
     scoreDisplay = ScoreDisplay(this);
     activeView = View.home;
     spawnFly();
@@ -352,7 +352,7 @@ class LangawGame extends Game {
         1.9,
         3.9,
         '200',
-        'shield'));
+        'beanstalk'));
     shoppingView.add(ShoppingView(
         this,
         2.5,
@@ -379,7 +379,7 @@ class LangawGame extends Game {
         1.9,
         8.34,
         '200',
-        'arrows'));
+        'magnet'));
     shoppingView.add(ShoppingView(
         this,
         2.5,
@@ -406,7 +406,7 @@ class LangawGame extends Game {
         1.9,
         12.75,
         '200',
-        'beanstalk'));
+        'eagle'));
     shoppingView.add(ShoppingView(
         this,
         2.5,
@@ -414,8 +414,8 @@ class LangawGame extends Game {
         200,
         4.4,
         12.75,
-        '200',
-        'magnet'));
+        '400',
+        'arrows'));
     shoppingView.add(ShoppingView(
         this,
         5,
@@ -423,8 +423,8 @@ class LangawGame extends Game {
         200,
         6.9,
         12.75,
-        '200',
-        'eagle'));
+        '800',
+        'shield'));
   }
 
   void spawnCircle(){
@@ -653,7 +653,7 @@ class LangawGame extends Game {
         circle.update(t));
     if (activeView == View.credits) {
       t1.update('Game Engineer', 1.9, 2);
-      t2.update('Markel Rebollo (astk.cf)', 1.9, 3);
+      t2.update('Mark (astk.cf)', 1.9, 3);
       t3.update('Art & Design', 1.9, 4.5);
         t4.update('Lorc (game-icons.net)', 1.9, 5.5);
       t5.update('Delapouite (game-icons.net)', 1.9, 6.5);
@@ -676,7 +676,14 @@ class LangawGame extends Game {
     if (activeView == View.home) {
       if (tuts.rect.contains(d.globalPosition)) {
         if (goOn) {
-          tuts.onTapDown();
+//          tuts.onTapDown();
+          tapRDone = false;
+          tapLDone = false;
+          whiteObtained = false;
+          poweractive = false;
+          tut = false;
+          homeView.onTapDown();
+          spawnCircle();
         }
       }
       if (shop.rect.contains(d.globalPosition)) {

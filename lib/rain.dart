@@ -128,13 +128,13 @@ class Rain {
       }
 
     }else {
-      if (game.eagleActive) {
+      if (game.eagleActive || game.amountRain < 3 && game.activeView == View.playing) {
         rainColor = colorGreen;
         rainPaint.color = Color(rainColor);
       }
       else {
         if (game.activeView == View.playing && game.beanstalk_bought == true) {
-          if (game.amountRain < 4) {
+            if (game.amountRain < 6) {
             rainColor = colorGreen;
             rainPaint.color = Color(rainColor);
           }

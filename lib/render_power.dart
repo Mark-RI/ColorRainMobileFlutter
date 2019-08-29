@@ -50,7 +50,7 @@ class Powers {
   void eliminate(){
     if(active == true) {
       if(power == "eagle-emblem.png"){
-        rainlimit = 20;
+        rainlimit = 25;
         game.eagleActive = true;
       }
       else{
