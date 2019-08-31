@@ -75,6 +75,7 @@ class Powers {
         rainlimit = 20;
         game.arrowsActive = true;
       }
+      print(raincount);
       if(raincount == rainlimit){
         if(pos == 1){
           game.firstFree = true;

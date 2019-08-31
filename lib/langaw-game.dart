@@ -411,7 +411,7 @@ class LangawGame extends Game {
         this,
         2.5,
         7.5,
-        200,
+        400,
         4.4,
         12.75,
         '400',
@@ -420,7 +420,7 @@ class LangawGame extends Game {
         this,
         5,
         7.5,
-        200,
+        800,
         6.9,
         12.75,
         '800',
@@ -438,7 +438,7 @@ class LangawGame extends Game {
 
   void spawnRain() {
     notHome = true;
-    if (arrowsActive == false || reduceRain == false || noRain == false) {
+    if (arrowsActive == false) {
       if (activeView == View.playing) if (amountRain > rains.length) {
         rains.add(Rain(this));
         power_up.forEach((Powers power) {
@@ -448,19 +448,29 @@ class LangawGame extends Game {
         });
       }
     }
+    else if (reduceRain == false || noRain == false) {
+      if (activeView == View.playing && arrowsActive == false) if (amountRain > rains.length) {
+        rains.add(Rain(this));
+        power_up.forEach((Powers power) {
+          if (power.active) {
+            power.raincount += 1;
+          }
+        });
+      }
+    }
     if (arrowsActive || reduceRain || noRain) {
+
+      temAmountRain = 5;
       if(noRain){
         temAmountRain = 0;
       }
       else if(reduceRain){
         temAmountRain = 1;
-      }else{
-        temAmountRain = 5;
       }
       if (activeView == View.playing) if (temAmountRain < rains.length) {
         rains.removeLast();
       }
-      if (temAmountRain > rains.length) {
+      else if (temAmountRain > rains.length) {
         rains.add(Rain(this));
         power_up.forEach((Powers power) {
           if (power.active) {
@@ -587,11 +597,10 @@ class LangawGame extends Game {
         if(tut == false && whiteObtained == false){
           whiteObtained = true;
           powerx = 2.5;
-          power = 'chest-armor.png';
-          power_up.add(Powers(this, powerx, 10, power, 1));
+          power_up.add(Powers(this, powerx, 10, 'chest-armor.png', 1));
           firstFree = false;
         }
-        if (firstFree) {
+        else if (firstFree) {
           powerx = 0;
           power = randomChoice(powers);
           power_up.add(Powers(this, powerx, 10, power, 1));

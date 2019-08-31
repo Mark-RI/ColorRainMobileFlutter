@@ -34,8 +34,8 @@ class Fly{
     ball = Sprite('circle.png');
     flyRect = Rect.fromLTWH(x, y, game.tileSize, game.tileSize);
 //    L1Rect = Rect.fromLTWH(x + (game.tileSize / 3.5), y, game.tileSize, game.tileSize);
-    paint1.color = colorBlack.withOpacity(0.7);
-    paint2.color = colorBlack.withOpacity(0.4);
+    paint1.color = colorBlack.withOpacity(0.9);
+    paint2.color = colorBlack.withOpacity(0.6);
   }
 
   void render(Canvas c) {

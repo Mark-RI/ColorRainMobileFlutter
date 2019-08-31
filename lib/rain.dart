@@ -25,6 +25,7 @@ class Rain {
   int colorWhite = 0xffffffff;
   int rainColor;
   int yIncrease = 0;
+  double speed = 10;
 //  double xCenter;
 //  double yCenter;
 
@@ -83,12 +84,12 @@ class Rain {
     rainPaint = Paint();
     if(game.tut == false && game.notHome){
       game.greentext = true;
-      if (game.amountRain <= 1 &&  game.tapLDone == false && game.tapRDone == false) {
+      if (game.tapLDone == false && game.tapRDone == false) {
         game.noRain = true;
         game.text = 'Tap left of ball';
         game.subtext = 'to move left';
       }
-      if (game.amountRain <= 1 &&  game.tapLDone && game.tapRDone == false) {
+      if (game.tapLDone && game.tapRDone == false) {
         game.noRain = true;
         game.text = 'Tap right of ball';
         game.subtext = 'to move right';
@@ -183,6 +184,9 @@ class Rain {
   }
 
   void update(double t) {
+    if(rainColor == colorGreen){
+      speed = 10.2;
+    }
     if(game.swordActive){
       yIncrease = 100;
     }else{
@@ -194,8 +198,8 @@ class Rain {
       }
     if (game.activeView == View.playing || game.activeView == View.home || game.activeView == View.lost || game.activeView == View.credits)
       if (onScreen) {
-        y += game.raintileSize * 9 * t;
-        rainRect = rainRect.translate(0, game.raintileSize * 9 * t);
+        y += game.raintileSize * speed * t;
+        rainRect = rainRect.translate(0, game.raintileSize * speed * t);
       }
     if (game.activeView == View.home || game.activeView == View.lost || game.activeView == View.credits) {
       if (y >= game.screenSize.height) {
